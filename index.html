@@ -505,6 +505,24 @@
 
 
     <script src="script.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyBsncHhhlqIi6qpf3hYtb0DOnq8Zjb-zpI",
+    authDomain: "avanta-3db7e.firebaseapp.com",
+    databaseURL: "https://avanta-3db7e-default-rtdb.firebaseio.com",
+    projectId: "avanta-3db7e",
+    storageBucket: "avanta-3db7e.firebasestorage.app",
+    messagingSenderId: "879564538420",
+    appId: "1:879564538420:web:a0fc85cc43a9347d92c061"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  console.log("AVanta Chat Firebase Connected!");
+      </script>
 </body>
 </html>
