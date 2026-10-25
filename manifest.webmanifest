@@ -1,0 +1,13 @@
+{
+  "name": "ÀVanta LINK",
+  "short_name": "ÀVanta LINK",
+  "description": "پیام‌رسان و فضای ارتباطی ÀVanta",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#090b11",
+  "theme_color": "#0b0d14",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
