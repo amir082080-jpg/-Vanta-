@@ -1,0 +1,11 @@
+{
+  "name": "ÀVanta Messenger + I VANTA",
+  "short_name": "ÀVanta",
+  "description": "ÀVanta Messenger and I VANTA Planner",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "icons": [{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
