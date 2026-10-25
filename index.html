@@ -1,0 +1,3379 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ÀVanta Messenger</title>
+
+<style>
+:root{
+  --accent:#7662ff;
+  --bg:#080c13;
+  --panel:rgba(17,25,35,.72);
+  --panel2:rgba(23,34,48,.78);
+  --line:rgba(120,145,180,.22);
+  --muted:#91a0b5;
+  --glass:rgba(18,27,40,.68);
+  --glass2:rgba(35,48,68,.55);
+  --blur:22px;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;
+  background:
+    radial-gradient(circle at 10% 0,#282052 0,transparent 32%),
+    radial-gradient(circle at 100% 100%,#102f4d 0,transparent 30%),
+    var(--bg);
+  color:#fff;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif
+}
+body{overflow:hidden}
+button,input,textarea{font:inherit}
+button{cursor:pointer;color:#fff;border:0}
+button:disabled{opacity:.5;cursor:not-allowed}
+#app{
+  height:100dvh;max-width:960px;margin:auto;
+  background:rgba(8,12,19,.76);
+  display:flex;flex-direction:column;
+  position:relative;
+  backdrop-filter:blur(12px)
+}
+.top{
+  height:66px;display:flex;align-items:center;gap:9px;
+  padding:9px 12px;background:rgba(14,21,31,.72);
+  border-bottom:1px solid var(--line);
+  position:relative;z-index:5;
+  backdrop-filter:blur(var(--blur))
+}
+.brand{font-weight:1000;font-size:21px;white-space:nowrap}
+.brand b,.logoBig b{color:#a493ff}
+.search{
+  flex:1;min-width:50px;background:rgba(24,35,49,.72);
+  border:1px solid var(--line);color:#fff;
+  border-radius:17px;padding:10px 12px;outline:0
+}
+main{flex:1;overflow:auto;padding:14px 12px 100px}
+.page{display:none}.page.on{display:block}
+.card,.row{
+  background:var(--glass);
+  border:1px solid var(--line);
+  border-radius:21px;padding:14px;margin-bottom:10px;
+  box-shadow:0 10px 35px rgba(0,0,0,.12);
+  backdrop-filter:blur(var(--blur))
+}
+.row{display:flex;align-items:center;gap:11px;transition:.15s}
+.row:active{transform:scale(.985)}
+.title{font-size:21px;font-weight:950;margin-bottom:5px}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.grow{flex:1;min-width:0}
+.avatar{
+  width:52px;height:52px;border-radius:18px;
+  display:grid;place-items:center;flex:none;
+  background:linear-gradient(135deg,#806bff,#21c9ff);
+  font-weight:950;overflow:hidden
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar.big{
+  width:118px;height:118px;border-radius:35px;
+  margin:4px auto 10px;font-size:42px
+}
+.cover{
+  height:145px;border-radius:22px;
+  background:linear-gradient(135deg,#6d5ce7,#1cc7ff);
+  background-size:cover;background-position:center;
+  margin:-14px -14px 12px
+}
+.btn{
+  background:rgba(27,38,52,.75);
+  border:1px solid rgba(100,125,155,.32);
+  border-radius:15px;padding:10px 13px;font-weight:800;
+  transition:.15s;
+  backdrop-filter:blur(15px)
+}
+.btn:active{transform:scale(.96)}
+.primary{
+  background:linear-gradient(135deg,#7b65ff,#4d83ff);
+  border-color:#8274ff
+}
+.danger{background:#481e2b;border-color:#713347}
+.full{width:100%;margin-top:7px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bottom{
+  position:fixed;bottom:9px;left:50%;
+  transform:translateX(-50%);
+  width:min(940px,calc(100% - 16px));
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:4px;padding:6px;background:rgba(17,26,37,.72);
+  border:1px solid rgba(100,125,155,.28);border-radius:27px;
+  backdrop-filter:blur(25px);z-index:20;
+  box-shadow:0 12px 45px #0008
+}
+.bottom button{
+  background:transparent;border-radius:21px;
+  padding:7px 3px;color:#8997aa
+}
+.bottom button.on{background:#7461ff22;color:#fff}
+.navico{font-size:21px;display:block;line-height:22px}
+.input,.textarea{
+  width:100%;background:rgba(10,16,24,.72);
+  border:1px solid #314055;border-radius:15px;
+  color:#fff;padding:11px;outline:0;margin:4px 0 8px
+}
+.textarea{min-height:90px;resize:vertical}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 9px;border-radius:999px;
+  background:linear-gradient(135deg,#9c86ff,#547dff);
+  font-size:11px;font-weight:950;
+  box-shadow:0 0 17px #806cff66
+}
+.premiummark{
+  width:23px;height:23px;border-radius:50%;
+  display:inline-grid;place-items:center;
+  background:radial-gradient(circle,#eee7ff,#8068ff 54%,#33238f);
+  box-shadow:0 0 13px #8977ff;font-weight:1000
+}
+.modal{
+  position:fixed;inset:0;background:#000b;z-index:50;
+  display:none;align-items:flex-end;padding:8px
+}
+.modal.on{display:flex}
+.sheet{
+  width:min(720px,100%);max-height:92dvh;
+  overflow:auto;background:rgba(16,25,35,.88);
+  border:1px solid rgba(100,125,155,.35);
+  border-radius:28px;padding:16px;
+  backdrop-filter:blur(28px)
+}
+.sheethead{
+  display:flex;align-items:center;
+  justify-content:space-between;margin-bottom:8px
+}
+.chat{
+  position:fixed;inset:0;z-index:40;background:#080d14;
+  display:none;flex-direction:column
+}
+.chat.on{display:flex}
+.chathead{
+  height:66px;display:flex;align-items:center;gap:9px;
+  padding:8px;background:rgba(17,26,36,.78);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(22px)
+}
+.messages{flex:1;overflow:auto;padding:13px}
+.msg{
+  max-width:80%;width:max-content;
+  background:rgba(23,36,52,.88);
+  border:1px solid #2d3c50;
+  border-radius:18px;padding:8px 11px;margin:6px 0;
+  position:relative
+}
+.msg.mine{
+  margin-right:auto;background:rgba(77,62,155,.92);
+  border-color:#6d5bc3
+}
+.msg img{max-width:260px;border-radius:13px;display:block}
+.msg.emoji-message{
+  background:transparent!important;
+  border:0!important;padding:3px!important
+}
+.msg.emoji-message img{
+  width:72px;height:72px;max-width:72px;max-height:72px;
+  object-fit:contain;border-radius:0
+}
+.msg .gift-message{display:flex;align-items:center;gap:9px;font-weight:800}
+.msg .gift-icon{font-size:36px}
+.reply-box{
+  border-right:3px solid #9b89ff;
+  background:#ffffff12;padding:6px 8px;
+  border-radius:9px;margin-bottom:6px;
+  font-size:12px
+}
+.reactionbar{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.reaction{
+  background:#ffffff12;border:1px solid #ffffff16;
+  padding:3px 7px;border-radius:999px;font-size:12px
+}
+.message-actions{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:7px
+}
+.message-actions button{
+  font-size:11px;padding:5px 8px
+}
+.composer{
+  display:flex;gap:6px;padding:8px;
+  border-top:1px solid var(--line);
+  background:rgba(14,21,31,.82);
+  backdrop-filter:blur(22px)
+}
+.composer input{
+  flex:1;min-width:0;background:#182331;
+  border:1px solid #314055;border-radius:18px;
+  color:#fff;padding:10px;outline:0
+}
+.toast{
+  position:fixed;top:14px;left:50%;
+  transform:translateX(-50%);z-index:100;
+  background:rgba(23,34,48,.94);border:1px solid #40506a;
+  border-radius:15px;padding:10px 15px;
+  display:none;max-width:90%;text-align:center;
+  backdrop-filter:blur(20px)
+}
+.toast.on{display:block}
+.empty{text-align:center;padding:30px 10px;color:var(--muted)}
+.login{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 50% 0,#221c4b,#080c13 55%);
+  z-index:200;display:grid;place-items:center;padding:20px
+}
+.login.hide{display:none}
+.loginbox{
+  width:min(440px,100%);background:rgba(17,25,35,.8);
+  border:1px solid #35445a;border-radius:30px;
+  padding:24px;text-align:center;
+  box-shadow:0 20px 80px #0009;
+  backdrop-filter:blur(28px)
+}
+.logoBig{font-size:42px;font-weight:1000}
+.spinner{
+  width:17px;height:17px;border:2px solid #ffffff55;
+  border-top-color:#fff;border-radius:50%;
+  display:inline-block;animation:spin .7s linear infinite;
+  vertical-align:middle
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.color{
+  width:43px;height:43px;border-radius:50%;
+  border:2px solid #fff3
+}
+.colors{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.stat{font-size:22px;font-weight:950}
+.shopItem{text-align:center}
+.emojiBox{
+  display:grid;place-items:center;height:90px;
+  border-radius:18px;background:#0b111a;
+  border:1px solid var(--line);overflow:hidden
+}
+.emojiBox img{max-width:80px;max-height:80px}
+.verified{color:#65e0a4;font-weight:900}
+.coverPreview{
+  height:100px;border-radius:18px;
+  background-size:cover;background-position:center;margin:8px 0
+}
+.emoji-picker{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  gap:7px;max-height:55dvh;overflow:auto
+}
+.emoji-picker-item{
+  min-height:58px;background:#0b111a;
+  border:1px solid #2d3c50;border-radius:15px;
+  display:flex;align-items:center;justify-content:center;
+  padding:5px;font-size:30px
+}
+.emoji-picker-item:active{transform:scale(.94)}
+.emoji-tabs{
+  display:flex;gap:5px;overflow:auto;margin-bottom:9px
+}
+.emoji-tab{
+  white-space:nowrap;background:#ffffff0b;
+  border:1px solid #ffffff12;border-radius:12px;padding:7px 10px
+}
+.emoji-tab.on{background:#7662ff44}
+.wallet{
+  background:linear-gradient(135deg,#5745c7,#2a75d7);
+  border-radius:23px;padding:20px;
+  box-shadow:0 15px 45px #4e43c755
+}
+.walletBalance{font-size:34px;font-weight:1000}
+.settingsRow{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 5px;border-bottom:1px solid #ffffff0c
+}
+.settingsIcon{
+  width:42px;height:42px;border-radius:14px;
+  display:grid;place-items:center;
+  background:#ffffff0d;font-size:21px
+}
+.settingsRow:last-child{border-bottom:0}
+.linkbox{
+  background:#080e16;border:1px solid #314055;
+  border-radius:14px;padding:10px;word-break:break-all;
+  direction:ltr;text-align:left
+}
+
+/* ÀVanta Glass Refresh */
+:root{--accent:#36e0a0;--accent2:#27bfff;--green:#36e0a0;--blue:#27bfff;--bg:#050b0c;--panel:rgba(12,25,24,.66);--glass:rgba(10,28,27,.58);--glass2:rgba(14,39,46,.52);--line:rgba(100,240,205,.18)}
+html,body{background:radial-gradient(circle at 8% 0,#0c5a4c55,transparent 30%),radial-gradient(circle at 100% 10%,#1265a855,transparent 32%),radial-gradient(circle at 50% 100%,#064c3c44,transparent 35%),var(--bg)}
+#app{background:rgba(3,12,12,.62)}
+.top{background:rgba(6,22,21,.58);border-bottom-color:rgba(90,235,190,.18)}
+.brand{font-size:24px;letter-spacing:.5px;text-shadow:0 0 20px #36e0a066;font-family:Georgia,serif}
+.brand b,.logoBig b{color:#36e0a0}
+.card,.row{background:linear-gradient(145deg,rgba(20,53,49,.54),rgba(9,25,34,.48));border-color:rgba(95,235,205,.18);box-shadow:0 14px 45px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.05)}
+.btn{background:rgba(15,35,39,.62);border-color:rgba(100,230,210,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.primary{background:linear-gradient(135deg,#20b987,#168bd8);border-color:#43e3b2}
+.search,.input,.textarea{background:rgba(5,20,22,.58);border-color:rgba(100,230,210,.18)}
+.bottom{background:rgba(7,25,27,.62);border-color:rgba(90,230,200,.2)}
+.bottom button.on{background:linear-gradient(135deg,#22b98922,#1caee022);color:#fff}
+.chat{background:radial-gradient(circle at 0 0,#0d403855,transparent 30%),#050c0d}
+.chathead,.composer{background:rgba(7,25,27,.65);border-color:rgba(100,230,210,.16)}
+.composer input{background:rgba(11,29,33,.7);border-color:rgba(100,230,210,.18)}
+.msg{background:linear-gradient(145deg,rgba(24,55,55,.76),rgba(12,34,40,.7));border-color:rgba(100,230,210,.16);border-radius:20px 20px 20px 7px;backdrop-filter:blur(18px)}
+.msg.mine{background:linear-gradient(145deg,rgba(24,130,102,.82),rgba(20,104,153,.78));border-color:rgba(110,240,210,.3);border-radius:20px 20px 7px 20px}
+.avatar{background:linear-gradient(135deg,#1acb91,#20aee8)!important;box-shadow:0 8px 24px #16c89a22}
+.cover{background:linear-gradient(135deg,#0b765d,#0874ad)}
+.login{background:radial-gradient(circle at 50% 0,#0d5a4d,#061013 55%)}
+.loginbox{background:rgba(8,28,29,.68);border-color:rgba(100,240,205,.22);box-shadow:0 25px 100px #000b,inset 0 1px 0 #ffffff12}
+.logoBig{font-family:Georgia,serif;letter-spacing:-2px;text-shadow:0 0 28px #32dfaa55}
+.explore-hero{position:relative;overflow:hidden}.explore-hero:after{content:"ÀVanta";position:absolute;left:18px;bottom:8px;font:900 38px Georgia,serif;color:#36e0a012;transform:rotate(-8deg);pointer-events:none}
+.inline-premium-emoji{width:25px;height:25px;object-fit:contain;vertical-align:middle;display:inline-block;margin:0 2px}.message-text{white-space:pre-wrap;word-break:break-word}
+.post-card{background:linear-gradient(145deg,rgba(16,43,42,.7),rgba(10,28,37,.62));border:1px solid rgba(100,230,210,.18);border-radius:24px;padding:15px;margin:10px 0;backdrop-filter:blur(20px);box-shadow:0 15px 45px #0003}.post-text{font-size:17px;line-height:1.8;margin:10px 0}.post-image{width:100%;max-height:440px;object-fit:cover;border-radius:18px;display:block}
+
+@media(max-width:500px){
+  .top{gap:6px}.brand{font-size:18px}
+  .btn{padding:9px 10px}
+  .emoji-picker{grid-template-columns:repeat(5,1fr)}
+}
+
+/* Unified login polish */
+#login{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:22px;background:radial-gradient(ellipse at 18% 15%,rgba(88,169,255,.19),transparent 38%),radial-gradient(ellipse at 85% 82%,rgba(255,214,107,.11),transparent 35%),#070b13!important;backdrop-filter:blur(18px)}
+#login .loginbox{width:min(100%,430px)!important;padding:36px 28px!important;border:1px solid rgba(255,255,255,.13)!important;border-radius:28px!important;background:linear-gradient(145deg,rgba(20,32,51,.94),rgba(8,14,25,.96))!important;box-shadow:0 28px 90px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.08)!important;text-align:center!important;position:relative;overflow:hidden}
+#login .loginbox:before{content:"";position:absolute;left:-60px;top:-90px;width:220px;height:220px;border-radius:50%;background:rgba(88,169,255,.10);filter:blur(8px);pointer-events:none}
+#login .logoBig{font-size:clamp(38px,9vw,54px)!important;letter-spacing:-2px!important;font-weight:900!important;color:#f4f8ff!important;text-shadow:0 0 28px rgba(88,169,255,.16)}
+#login .logoBig b{color:#ffd66b!important}
+#login .muted{color:#9fb0c9!important}
+#login .loginbox .muted[style*="margin-bottom"]{font-size:14px;letter-spacing:3px;text-transform:uppercase;margin-bottom:30px!important}
+#googleLogin{min-height:54px!important;border-radius:15px!important;font-size:15px!important;font-weight:800!important;box-shadow:0 10px 30px rgba(88,169,255,.18);transition:transform .2s,filter .2s}
+#googleLogin:hover{transform:translateY(-2px);filter:brightness(1.08)}
+#loginStatus{min-height:18px;line-height:1.8}
+.login-note{font-size:12px;color:#7f91aa;line-height:1.8;margin-top:18px}
+/* Planner launch and contained workspace */
+#plannerLaunch{white-space:nowrap;border:1px solid rgba(255,214,107,.34);background:linear-gradient(135deg,rgba(255,214,107,.16),rgba(88,169,255,.12));color:#ffe6a0;font-weight:800}
+#plannerShell{position:fixed;inset:0;z-index:10000;background:#070b13;display:none;flex-direction:column}
+#plannerShell.open{display:flex}
+#plannerBar{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:12px;padding:8px 14px;background:#0d1625;border-bottom:1px solid #26364d;color:#eef5ff;font:600 14px system-ui,sans-serif}
+#plannerBar strong{color:#ffd66b;letter-spacing:.4px}
+#plannerBar .planner-spacer{flex:1}
+#plannerClose{border:1px solid #3b4c65;border-radius:10px;background:#17253a;color:#f3f7ff;padding:8px 13px;font-weight:700;cursor:pointer}
+#plannerFrame{display:block;width:100%;height:calc(100% - 58px);border:0;background:#080d18}
+@media(max-width:560px){#login .loginbox{padding:30px 22px!important;border-radius:23px!important}#plannerBar{height:54px;flex-basis:54px}#plannerFrame{height:calc(100% - 54px)}}
+
+</style>
+</head>
+
+<body>
+
+<div id="toast" class="toast"></div>
+
+<div id="login" class="login">
+  <div class="loginbox">
+    <div class="logoBig">À<b>Vanta</b></div>
+    <div class="muted" style="margin-bottom:22px">Messenger</div>
+
+    <button id="googleLogin" class="btn primary full">🔵 ورود با Google</button>
+
+    <div id="loginStatus" class="muted small" style="margin-top:12px"></div>
+    <div class="login-note">یک حساب برای ورود به فضای ÀVanta؛ Planner در همان صفحه در دسترس است.</div>
+  </div>
+</div>
+
+<div id="app">
+
+<header class="top">
+  <div class="brand">À<b>Vanta</b></div>
+  <input id="search" class="search" placeholder="جستجوی چت یا مخاطب">
+  <button id="plannerLaunch" class="btn" type="button">I VANTA</button>
+  <button id="newBtn" class="btn primary">＋</button>
+</header>
+
+<main>
+
+<section id="chatsPage" class="page on">
+  <div class="card">
+    <div class="title">Chats</div>
+    <div class="muted small">پیام‌ها، گروه‌ها و کانال‌ها</div>
+  </div>
+  <div id="chatList"></div>
+</section>
+
+<section id="explorePage" class="page">
+  <div class="card explore-hero">
+    <div class="title">Explore</div>
+    <div class="muted small">پست‌های منتشرشده در ÀVanta</div>
+    <button id="newPostBtn" class="btn primary full">＋ ساخت پست</button>
+  </div>
+  <div id="exploreList"></div>
+</section>
+
+<section id="contactsPage" class="page">
+  <div class="card">
+    <div class="title">مخاطبین</div>
+    <input id="contactInput" class="input" placeholder="UID یا username">
+    <button id="findContact" class="btn primary full">افزودن مخاطب</button>
+  </div>
+  <div id="contactsList"></div>
+</section>
+
+<section id="settingsPage" class="page">
+
+  <div class="card">
+    <div class="title">Settings</div>
+
+    <div class="settingsRow">
+      <div class="settingsIcon">👤</div>
+      <div class="grow">
+        <b>Edit Info</b>
+        <div class="muted small">نام، Username و Bio</div>
+      </div>
+      <button id="editInfo" class="btn">›</button>
+    </div>
+
+    <div class="settingsRow">
+      <div class="settingsIcon">🖼️</div>
+      <div class="grow"><b>Set Photo</b></div>
+      <button id="setPhoto" class="btn">›</button>
+    </div>
+
+    <div class="settingsRow">
+      <div class="settingsIcon">🎨</div>
+      <div class="grow"><b>Profile Colour</b></div>
+      <button id="profileColor" class="btn">›</button>
+    </div>
+
+    <div class="settingsRow">
+      <div class="settingsIcon">✨</div>
+      <div class="grow"><b>Premium Name Emoji</b></div>
+      <button id="nameEmoji" class="btn">›</button>
+    </div>
+
+    <div class="settingsRow">
+      <div class="settingsIcon">⭕</div>
+      <div class="grow"><b>Stories</b></div>
+      <button id="storyBtn" class="btn">›</button>
+    </div>
+
+    <div class="settingsRow">
+      <div class="settingsIcon">💎</div>
+      <div class="grow"><b>ÀVanta Premium</b></div>
+      <button id="premiumBtn" class="btn">›</button>
+    </div>
+
+    <div class="settingsRow">
+      <div class="settingsIcon">🔖</div>
+      <div class="grow"><b>Saved Messages</b></div>
+      <button id="savedBtn" class="btn">›</button>
+    </div>
+
+    <button id="adminBtn" class="btn primary full" style="display:none">
+      ⚡ Admin Panel
+    </button>
+
+    <button id="logoutBtn" class="btn danger full">خروج</button>
+  </div>
+
+  <div class="card">
+    <div class="title">Create</div>
+    <div class="grid2">
+      <button id="groupBtn" class="btn primary">👥 Group</button>
+      <button id="channelBtn" class="btn primary">📢 Channel</button>
+      <button id="gifMakerBtn" class="btn">GIF</button>
+    </div>
+  </div>
+
+</section>
+
+<section id="profilePage" class="page">
+
+  <div class="card">
+    <div id="profileCover" class="cover"></div>
+
+    <div style="text-align:center">
+      <div id="bigAvatar"></div>
+
+      <h2 id="profileName" style="margin:6px 0"></h2>
+      <div id="profileUsername" class="muted"></div>
+      <div id="profileBadges" style="margin:10px"></div>
+      <div id="profileBio" class="muted"></div>
+
+      <div class="grid3" style="margin-top:15px">
+        <button id="profileEdit" class="btn primary">Edit Info</button>
+        <button id="profilePhoto" class="btn">Set Photo</button>
+        <button id="profileMore" class="btn">•••</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="title">Stories</div>
+    <div id="storyList" class="empty">هنوز Storyای نیست.</div>
+  </div>
+
+</section>
+
+</main>
+
+<nav class="bottom">
+  <button data-page="explorePage"><span class="navico">✦</span>اکسپلور</button>
+  <button data-page="contactsPage">
+    <span class="navico">♙</span>مخاطبین
+  </button>
+  <button data-page="chatsPage" class="on">
+    <span class="navico">◌</span>چت‌ها
+  </button>
+  <button data-page="settingsPage">
+    <span class="navico">⚙</span>تنظیمات
+  </button>
+  <button data-page="profilePage">
+    <span class="navico">◎</span>پروفایل
+  </button>
+</nav>
+
+</div>
+
+<input id="photoFile" type="file" accept="image/*" hidden>
+<input id="coverFile" type="file" accept="image/*" hidden>
+<input id="storyFile" type="file" accept="image/*,video/*" hidden>
+<input id="gifFile" type="file" accept="image/gif" hidden>
+<input id="postImageFile" type="file" accept="image/*" hidden>
+
+<div id="modal" class="modal">
+  <div class="sheet">
+    <div class="sheethead">
+      <h3 id="modalTitle">ÀVanta</h3>
+      <button id="closeModal" class="btn">×</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="chat" class="chat">
+
+<header class="chathead">
+  <button id="backChat" class="btn">‹</button>
+  <div id="chatAvatar" class="avatar">A</div>
+
+  <div class="grow">
+    <b id="chatTitle">Chat</b>
+    <div id="chatSub" class="muted small"></div>
+  </div>
+
+  <button id="chatMenu" class="btn">•••</button>
+</header>
+
+<div id="messages" class="messages"></div>
+
+<div class="composer">
+  <button id="chatEmoji" class="btn" title="Emoji">😊</button>
+  <button id="chatGif" class="btn">GIF</button>
+  <input id="messageInput" placeholder="پیام...">
+  <button id="sendMessage" class="btn primary">➤</button>
+</div>
+
+</div>
+
+
+<div id="plannerShell" aria-hidden="true">
+  <div id="plannerBar"><strong>I VANTA</strong><span>Cyber Planner</span><span class="planner-spacer"></span><button id="plannerClose" type="button">بازگشت به Messenger ×</button></div>
+  <iframe id="plannerFrame" title="I VANTA Planner" loading="lazy" referrerpolicy="no-referrer"></iframe>
+</div>
+<script>
+(function(){
+  const plannerDocument = "\u003c!doctype html>\u003chtml lang=\"fa\" dir=\"rtl\">\u003chead>\u003cmeta charset=\"utf-8\">\u003cmeta name=\"viewport\" content=\"width=device-width,initial-scale=1,viewport-fit=cover\">\u003cmeta name=\"theme-color\" content=\"#080d18\">\u003clink rel=\"manifest\" href=\"manifest.webmanifest\">\u003clink rel=\"icon\" href=\"icon.svg\">\u003ctitle>I VANTA — Cyber Planner v2\u003c/title>\n\u003cstyle>\n:root{--bg:#080d18;--panel:#111e31d9;--line:#ffffff1b;--blue:#58a9ff;--yellow:#ffd66b;--green:#68f0b0;--red:#ff7185;--text:#eff6ff;--muted:#95a9c4}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 10% 0%,#17386a88,transparent 40%),radial-gradient(ellipse at 100% 40%,#164b4380,transparent 35%),var(--bg);color:var(--text);font-family:system-ui,Tahoma,Arial;min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer;color:inherit;transition:.2s}button:active{transform:scale(.98)}.wrap{width:min(1100px,92%);margin:auto}.top{position:sticky;top:0;z-index:9;background:#080d18cc;backdrop-filter:blur(22px);border-bottom:1px solid var(--line);padding:12px 0}.nav{display:flex;justify-content:space-between;align-items:center;gap:10px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:2px;font-size:20px}.mark{display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#70c6ff,#2866e5);box-shadow:0 0 25px #398cff55}.brand em{font-style:normal;color:var(--yellow)}.glass{border:1px solid #c0dcff25;background:linear-gradient(145deg,#ffffff13,#ffffff05);backdrop-filter:blur(18px);box-shadow:inset 0 1px #ffffff12,0 8px 22px #0002;border-radius:15px;padding:10px 14px}.primary{background:linear-gradient(135deg,#67b7ff,#347af1);color:#071326;border-color:#8bcaff65;font-weight:800}.gold{background:linear-gradient(135deg,#ffe69a,#eebd42);color:#251a03;border-color:#ffe69a70;font-weight:800}.small{font-size:12px;padding:9px 11px}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center;padding:40px 0 22px}.kicker{font-size:11px;color:var(--green);letter-spacing:2px;font-weight:800}h1{font-size:clamp(37px,6vw,60px);line-height:1.12;margin:14px 0}h1 span{color:var(--blue);text-shadow:0 0 28px #398cff55}.muted,p{color:var(--muted);line-height:1.85}.lead{max-width:600px}.row{display:flex;gap:9px;flex-wrap:wrap}.showcase,.card,.task,.project{background:linear-gradient(145deg,#172943c9,#0d1728e8);border:1px solid var(--line);backdrop-filter:blur(18px);box-shadow:0 14px 40px #0002;border-radius:22px;padding:20px}.showcase{min-height:230px}.micro{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}.clock{font-size:44px;font-weight:850;margin:25px 0 0;font-variant-numeric:tabular-nums}.bars{display:flex;gap:5px;height:36px;align-items:end;margin-top:18px}.bars i{flex:1;border-radius:5px;background:linear-gradient(#65c1ff,#2878f0);animation:b 2s infinite alternate}.bars i:nth-child(3n){background:linear-gradient(#68f0b0,#198f8b)}@keyframes b{to{transform:scaleY(.55);opacity:.6}}.section{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:25px 0 13px}.section h2{margin:0;font-size:21px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.card{padding:15px;border-radius:18px}.card label{font-size:12px;color:var(--muted)}.card strong{display:block;font-size:22px;margin:13px 0 3px;color:var(--green)}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.task{--accent:var(--blue);padding:18px;min-width:0}.taskhead{display:flex;align-items:center;gap:11px}.taskicon{display:grid;place-items:center;width:43px;height:43px;border-radius:14px;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);font-size:20px}.task h3{margin:0 0 4px}.taskhead p{font-size:12px;margin:0}.tag{margin-inline-start:auto;font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:9px;padding:6px 8px}.fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}.field input,.field textarea{width:100%;min-width:0;background:#070f1dcc;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px}.field textarea{min-height:75px;resize:vertical}.timerline{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#050b14a6;border:1px solid #ffffff0c;border-radius:14px;padding:12px;margin:15px 0}.timer{font-size:24px;font-weight:850;font-variant-numeric:tabular-nums}.timer.active{color:var(--green)}.hint{font-size:11px;color:var(--muted)}.ring{width:45px;height:45px;transform:rotate(-90deg)}.ring circle{fill:none;stroke-width:5}.track{stroke:#ffffff14}.progress{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:126;stroke-dashoffset:126;transition:.3s}.result{display:flex;gap:10px;align-items:center;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#ffffff05}.result .mark{width:39px;height:39px;flex-shrink:0;border-radius:12px;background:#58a9ff14;color:var(--blue);font-size:20px}.result strong{display:block;font-size:13px;margin-bottom:4px}.result span{font-size:11px;color:var(--muted);line-height:1.7}.result.good{border-color:#68f0b044}.result.good .mark{color:var(--green)}.result.bad{border-color:#ff718544}.result.bad .mark{color:var(--red)}.taskactions{display:flex;gap:8px;flex-wrap:wrap}.projectform{display:grid;grid-template-columns:.6fr .6fr 1.5fr auto;gap:10px;align-items:end}.projectlist{display:grid;gap:12px;margin-top:13px}.project{padding:17px}.project p{font-size:12px;margin:6px 0}.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.chip{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:9px;padding:6px 8px}.history{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}.history th,.history td{text-align:start;padding:9px;border-bottom:1px solid var(--line)}.history th{color:var(--muted)}.empty{text-align:center;padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:12px}.note{margin:25px 0;padding:16px;border:1px solid #ffd66b30;background:#ffd66b08;border-radius:16px;font-size:12px;color:var(--muted);line-height:1.9}.note b{color:var(--yellow)}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;z-index:30;background:#12243bef;backdrop-filter:blur(18px);border:1px solid #58a9ff55;border-radius:14px;padding:12px 16px;transition:.2s;max-width:90vw;font-size:13px}.toast.on{opacity:1;transform:translate(-50%,0)}footer{text-align:center;padding:0 0 25px;color:var(--muted);font-size:11px}.hide{display:none!important}\n@media(max-width:800px){.hero{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.projectform{grid-template-columns:1fr 1fr}.projectform .wide{grid-column:1/-1}}@media(max-width:600px){.cards{grid-template-columns:1fr}.hero{padding-top:27px}h1{font-size:39px}.showcase{min-height:200px}.brand{font-size:17px}.glass{padding:9px 10px;font-size:12px}.task{padding:15px}.section h2{font-size:19px}.projectform{grid-template-columns:1fr}.projectform .wide{grid-column:auto}}\n\n/* I VANTA Cyber Upgrade */\n:root{--glow:0 0 24px #58a9ff24}body{background-image:radial-gradient(ellipse at 10% 0%,#17386a99,transparent 42%),radial-gradient(ellipse at 100% 40%,#164b4380,transparent 36%),linear-gradient(145deg,#070b15,#0a1221 55%,#080d18)}.mark{box-shadow:0 0 22px #398cff66, inset 0 0 10px #ffffff35}.glass,.card,.task,.project,.showcase{transition:border-color .22s,box-shadow .22s,transform .22s}.card:hover,.task:hover,.project:hover{border-color:#58a9ff55;box-shadow:var(--glow);transform:translateY(-2px)}.upgrade-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.upgrade-panel{border:1px solid #58a9ff30;background:linear-gradient(145deg,#10213acc,#081321e8);border-radius:20px;padding:18px;min-width:0;box-shadow:0 10px 30px #0002}.upgrade-panel h3{margin:0 0 8px}.xpbar{height:9px;background:#ffffff12;border-radius:99px;overflow:hidden;margin:12px 0}.xpbar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--green),var(--yellow));border-radius:99px;transition:width .6s}.quest{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:13px;padding:11px;margin-top:9px}.quest.done{border-color:#68f0b055;background:#68f0b00b}.quest .qmark{display:grid;place-items:center;width:32px;height:32px;flex-shrink:0;border-radius:10px;background:#58a9ff18;color:var(--blue);font-weight:900}.chartbox{height:160px;margin-top:12px;position:relative}.chartbox canvas{width:100%;height:100%;display:block}.upgrade-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.upgrade-actions button{flex:1}.theme-cyan{--blue:#58e4ff;--green:#70ffc7;--yellow:#ffe16b}.theme-green{--blue:#68f0b0;--green:#b4ff69;--yellow:#ffd66b}.theme-violet{--blue:#a99aff;--green:#66f0d3;--yellow:#ffda76}.level-badge{display:inline-flex;align-items:center;gap:6px;border:1px solid #ffd66b55;color:var(--yellow);padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800}.spark{animation:spark .7s ease-out}@keyframes spark{0%{filter:brightness(1);transform:scale(1)}35%{filter:brightness(1.7);transform:scale(1.025)}100%{filter:brightness(1);transform:scale(1)}}.bar-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:10px}@media(max-width:700px){.upgrade-grid{grid-template-columns:1fr}.upgrade-panel{padding:15px}.upgrade-actions button{min-width:100px}}\n\u003c/style>\u003c/head>\u003cbody>\n\u003cheader class=\"top\">\u003cdiv class=\"wrap nav\">\u003cdiv class=\"brand\">\u003cspan class=\"mark\">IV\u003c/span>\u003cspan>I \u003cem>VANTA\u003c/em>\u003c/span>\u003c/div>\u003cdiv class=\"row\">\u003cbutton class=\"glass small\" id=\"lang\">EN / فارسی\u003c/button>\u003cbutton class=\"glass small\" id=\"notify\">فعال‌سازی اعلان\u003c/button>\u003cbutton class=\"glass small\" id=\"install\" hidden>＋ نصب اپ\u003c/button>\u003c/div>\u003c/div>\u003c/header>\n\u003cmain class=\"wrap\">\n\u003csection class=\"hero\">\u003cdiv>\u003cdiv class=\"kicker\">YOUR TIME. YOUR LEVEL.\u003c/div>\u003ch1>\u003cspan data-fa=\"برنامه‌ریزی\" data-en=\"Plan better.\">برنامه‌ریزی\u003c/span>\u003cbr>\u003cspan data-fa=\"در سطح بعدی.\" data-en=\"Play at your level.\">در سطح بعدی.\u003c/span>\u003c/h1>\u003cp class=\"lead\" data-fa=\"برای استریم، خواب، درس، گیم و پروژه‌هات هدف مشخص کن. آخر هر کار، I VANTA دقیق نشون می‌ده چقدر به برنامه‌ات پایبند بودی؛ بدون ثبت‌نام و بدون فایربیس.\" data-en=\"Set goals for streaming, sleep, study, gaming and coding. I VANTA measures how closely you followed your plan — no account and no Firebase.\">برای استریم، خواب، درس، گیم و پروژه‌هات هدف مشخص کن. آخر هر کار، I VANTA دقیق نشون می‌ده چقدر به برنامه‌ات پایبند بودی؛ بدون ثبت‌نام و بدون فایربیس.\u003c/p>\u003cdiv class=\"row\">\u003cbutton class=\"glass primary\" id=\"goDaily\" data-fa=\"شروع برنامه امروز\" data-en=\"Start today's plan\">شروع برنامه امروز\u003c/button>\u003cbutton class=\"glass\" id=\"goProjects\" data-fa=\"پروژه‌هام\" data-en=\"My projects\">پروژه‌هام\u003c/button>\u003cbutton class=\"glass small\" id=\"changeName\" data-fa=\"تغییر اسم\" data-en=\"Change name\">تغییر اسم\u003c/button>\u003c/div>\u003cp id=\"greeting\" style=\"font-size:12px\">\u003c/p>\u003c/div>\n\u003cdiv class=\"showcase\">\u003cdiv class=\"micro\">\u003cspan>I VANTA / DAILY CONTROL\u003c/span>\u003cspan style=\"color:var(--green)\">● LOCAL SAVE\u003c/span>\u003c/div>\u003cdiv class=\"clock\" id=\"clock\">00:00:00\u003c/div>\u003cdiv class=\"hint\" data-fa=\"زمان فعلی دستگاه\" data-en=\"Your device local time\">زمان فعلی دستگاه\u003c/div>\u003cdiv class=\"bars\" aria-hidden=\"true\">\u003ci style=\"height:35%\">\u003c/i>\u003ci style=\"height:60%\">\u003c/i>\u003ci style=\"height:42%\">\u003c/i>\u003ci style=\"height:78%\">\u003c/i>\u003ci style=\"height:50%\">\u003c/i>\u003ci style=\"height:92%\">\u003c/i>\u003ci style=\"height:64%\">\u003c/i>\u003ci style=\"height:42%\">\u003c/i>\u003ci style=\"height:72%\">\u003c/i>\u003ci style=\"height:54%\">\u003c/i>\u003ci style=\"height:88%\">\u003c/i>\u003ci style=\"height:38%\">\u003c/i>\u003c/div>\u003c/div>\u003c/section>\n\u003cdiv class=\"section\">\u003cdiv>\u003ch2 data-fa=\"نمای کلی امروز\" data-en=\"Today's overview\">نمای کلی امروز\u003c/h2>\u003cspan class=\"hint\" data-fa=\"وضعیت فعالیت‌های روزانه\" data-en=\"Your daily activity at a glance\">وضعیت فعالیت‌های روزانه\u003c/span>\u003c/div>\u003cbutton class=\"glass small\" id=\"resetDay\" data-fa=\"روز جدید\" data-en=\"New day\">روز جدید\u003c/button>\u003c/div>\n\u003cdiv class=\"stats\">\u003cdiv class=\"card\">\u003clabel data-fa=\"استریم\" data-en=\"Stream\">استریم\u003c/label>\u003cstrong id=\"sum-stream\">۰ دقیقه\u003c/strong>\u003cspan class=\"hint\" id=\"sumhint-stream\">هنوز شروع نشده\u003c/span>\u003c/div>\u003cdiv class=\"card\">\u003clabel data-fa=\"خواب\" data-en=\"Sleep\">خواب\u003c/label>\u003cstrong id=\"sum-sleep\">هدف ۹ ساعت\u003c/strong>\u003cspan class=\"hint\" id=\"sumhint-sleep\">در انتظار ثبت خواب\u003c/span>\u003c/div>\u003cdiv class=\"card\">\u003clabel data-fa=\"درس\" data-en=\"Study\">درس\u003c/label>\u003cstrong id=\"sum-study\">۰ دقیقه\u003c/strong>\u003cspan class=\"hint\" id=\"sumhint-study\">هنوز شروع نشده\u003c/span>\u003c/div>\u003cdiv class=\"card\">\u003clabel data-fa=\"گیم\" data-en=\"Gaming\">گیم\u003c/label>\u003cstrong id=\"sum-gaming\">۰ دقیقه\u003c/strong>\u003cspan class=\"hint\" id=\"sumhint-gaming\">هنوز شروع نشده\u003c/span>\u003c/div>\u003c/div>\n\u003cdiv class=\"section\">\u003cdiv>\u003ch2 data-fa=\"کنترل برنامه روزانه\" data-en=\"Daily control center\">کنترل برنامه روزانه\u003c/h2>\u003cspan class=\"hint\" data-fa=\"هدف ساعت را تنظیم کن، شروع بزن و بعد از پایان نتیجه را ثبت کن.\" data-en=\"Set a target, start a timer, then record the result.\">هدف ساعت را تنظیم کن، شروع بزن و بعد از پایان نتیجه را ثبت کن.\u003c/span>\u003c/div>\u003c/div>\n\u003cdiv class=\"cards\" id=\"daily\">\n\u003carticle class=\"task\" data-task=\"stream\" style=\"--accent:var(--blue)\">\u003cdiv class=\"taskhead\">\u003cdiv class=\"taskicon\">◉\u003c/div>\u003cdiv>\u003ch3 data-fa=\"استریم\" data-en=\"Stream\">استریم\u003c/h3>\u003cp data-fa=\"زمان پخش زنده را مدیریت کن\" data-en=\"Manage your live session\">زمان پخش زنده را مدیریت کن\u003c/p>\u003c/div>\u003cspan class=\"tag\">DAILY\u003c/span>\u003c/div>\u003cdiv class=\"fields\">\u003cdiv class=\"field\">\u003clabel data-fa=\"هدف (ساعت)\" data-en=\"Target (hours)\">هدف (ساعت)\u003c/label>\u003cinput type=\"number\" min=\".25\" max=\"18\" step=\".25\" value=\"6\" data-target=\"stream\">\u003c/div>\u003cdiv class=\"field\">\u003clabel data-fa=\"ساعت برنامه (اختیاری)\" data-en=\"Planned time (optional)\">ساعت برنامه (اختیاری)\u003c/label>\u003cinput type=\"time\" data-plan=\"stream\">\u003c/div>\u003c/div>\u003cdiv class=\"timerline\">\u003cdiv>\u003cdiv class=\"timer\" id=\"timer-stream\">00:00:00\u003c/div>\u003cdiv class=\"hint\" id=\"hint-stream\">آماده شروع\u003c/div>\u003c/div>\u003csvg class=\"ring\" viewBox=\"0 0 48 48\">\u003ccircle class=\"track\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003ccircle class=\"progress\" id=\"ring-stream\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003c/svg>\u003c/div>\u003cdiv class=\"taskactions\">\u003cbutton class=\"glass primary\" data-action=\"start\" data-id=\"stream\" data-fa=\"شروع استریم\" data-en=\"Start stream\">شروع استریم\u003c/button>\u003cbutton class=\"glass gold\" data-action=\"finish\" data-id=\"stream\" data-fa=\"استریم به پایان رسید\" data-en=\"Stream ended\">استریم به پایان رسید\u003c/button>\u003c/div>\u003cdiv class=\"result\" id=\"result-stream\">\u003cdiv class=\"mark\">—\u003c/div>\u003cdiv>\u003cstrong data-fa=\"منتظر نتیجه\" data-en=\"Waiting for result\">منتظر نتیجه\u003c/strong>\u003cspan data-fa=\"بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\" data-en=\"Actual time will be compared with your target.\">بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\u003c/span>\u003c/div>\u003c/div>\u003c/article>\u003carticle class=\"task\" data-task=\"sleep\" style=\"--accent:var(--yellow)\">\u003cdiv class=\"taskhead\">\u003cdiv class=\"taskicon\">☾\u003c/div>\u003cdiv>\u003ch3 data-fa=\"خواب\" data-en=\"Sleep\">خواب\u003c/h3>\u003cp data-fa=\"هدف پیشنهادی خواب: ۹ ساعت\" data-en=\"Suggested sleep target: 9 hours\">هدف پیشنهادی خواب: ۹ ساعت\u003c/p>\u003c/div>\u003cspan class=\"tag\">RECOVERY\u003c/span>\u003c/div>\u003cdiv class=\"fields\">\u003cdiv class=\"field\">\u003clabel data-fa=\"هدف (ساعت)\" data-en=\"Target (hours)\">هدف (ساعت)\u003c/label>\u003cinput type=\"number\" min=\".25\" max=\"18\" step=\".25\" value=\"9\" data-target=\"sleep\">\u003c/div>\u003cdiv class=\"field\">\u003clabel data-fa=\"ساعت برنامه (اختیاری)\" data-en=\"Planned time (optional)\">ساعت برنامه (اختیاری)\u003c/label>\u003cinput type=\"time\" data-plan=\"sleep\">\u003c/div>\u003c/div>\u003cdiv class=\"timerline\">\u003cdiv>\u003cdiv class=\"timer\" id=\"timer-sleep\">00:00:00\u003c/div>\u003cdiv class=\"hint\" id=\"hint-sleep\">آماده شروع\u003c/div>\u003c/div>\u003csvg class=\"ring\" viewBox=\"0 0 48 48\">\u003ccircle class=\"track\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003ccircle class=\"progress\" id=\"ring-sleep\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003c/svg>\u003c/div>\u003cdiv class=\"taskactions\">\u003cbutton class=\"glass primary\" data-action=\"start\" data-id=\"sleep\" data-fa=\"رفتم بخوابم\" data-en=\"Going to sleep\">رفتم بخوابم\u003c/button>\u003cbutton class=\"glass gold\" data-action=\"finish\" data-id=\"sleep\" data-fa=\"بیدار شدم\" data-en=\"I woke up\">بیدار شدم\u003c/button>\u003c/div>\u003cdiv class=\"result\" id=\"result-sleep\">\u003cdiv class=\"mark\">—\u003c/div>\u003cdiv>\u003cstrong data-fa=\"منتظر نتیجه\" data-en=\"Waiting for result\">منتظر نتیجه\u003c/strong>\u003cspan data-fa=\"بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\" data-en=\"Actual time will be compared with your target.\">بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\u003c/span>\u003c/div>\u003c/div>\u003c/article>\u003carticle class=\"task\" data-task=\"study\" style=\"--accent:var(--green)\">\u003cdiv class=\"taskhead\">\u003cdiv class=\"taskicon\">▤\u003c/div>\u003cdiv>\u003ch3 data-fa=\"درس خوندن\" data-en=\"Study\">درس خوندن\u003c/h3>\u003cp data-fa=\"تمرکز کن، بعد نتیجه‌ات را ثبت کن\" data-en=\"Focus, then record your result\">تمرکز کن، بعد نتیجه‌ات را ثبت کن\u003c/p>\u003c/div>\u003cspan class=\"tag\">DAILY\u003c/span>\u003c/div>\u003cdiv class=\"fields\">\u003cdiv class=\"field\">\u003clabel data-fa=\"هدف (ساعت)\" data-en=\"Target (hours)\">هدف (ساعت)\u003c/label>\u003cinput type=\"number\" min=\".25\" max=\"18\" step=\".25\" value=\"2\" data-target=\"study\">\u003c/div>\u003cdiv class=\"field\">\u003clabel data-fa=\"ساعت برنامه (اختیاری)\" data-en=\"Planned time (optional)\">ساعت برنامه (اختیاری)\u003c/label>\u003cinput type=\"time\" data-plan=\"study\">\u003c/div>\u003c/div>\u003cdiv class=\"timerline\">\u003cdiv>\u003cdiv class=\"timer\" id=\"timer-study\">00:00:00\u003c/div>\u003cdiv class=\"hint\" id=\"hint-study\">آماده شروع\u003c/div>\u003c/div>\u003csvg class=\"ring\" viewBox=\"0 0 48 48\">\u003ccircle class=\"track\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003ccircle class=\"progress\" id=\"ring-study\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003c/svg>\u003c/div>\u003cdiv class=\"taskactions\">\u003cbutton class=\"glass primary\" data-action=\"start\" data-id=\"study\" data-fa=\"شروع درس\" data-en=\"Start studying\">شروع درس\u003c/button>\u003cbutton class=\"glass gold\" data-action=\"finish\" data-id=\"study\" data-fa=\"درسم تموم شد\" data-en=\"Study finished\">درسم تموم شد\u003c/button>\u003c/div>\u003cdiv class=\"result\" id=\"result-study\">\u003cdiv class=\"mark\">—\u003c/div>\u003cdiv>\u003cstrong data-fa=\"منتظر نتیجه\" data-en=\"Waiting for result\">منتظر نتیجه\u003c/strong>\u003cspan data-fa=\"بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\" data-en=\"Actual time will be compared with your target.\">بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\u003c/span>\u003c/div>\u003c/div>\u003c/article>\u003carticle class=\"task\" data-task=\"gaming\" style=\"--accent:var(--yellow)\">\u003cdiv class=\"taskhead\">\u003cdiv class=\"taskicon\">⌘\u003c/div>\u003cdiv>\u003ch3 data-fa=\"گیم زدن\" data-en=\"Gaming\">گیم زدن\u003c/h3>\u003cp data-fa=\"گیم هم با برنامه، نه بی‌نهایت\" data-en=\"Play with a plan, not endlessly\">گیم هم با برنامه، نه بی‌نهایت\u003c/p>\u003c/div>\u003cspan class=\"tag\">DAILY\u003c/span>\u003c/div>\u003cdiv class=\"fields\">\u003cdiv class=\"field\">\u003clabel data-fa=\"هدف (ساعت)\" data-en=\"Target (hours)\">هدف (ساعت)\u003c/label>\u003cinput type=\"number\" min=\".25\" max=\"18\" step=\".25\" value=\"2\" data-target=\"gaming\">\u003c/div>\u003cdiv class=\"field\">\u003clabel data-fa=\"ساعت برنامه (اختیاری)\" data-en=\"Planned time (optional)\">ساعت برنامه (اختیاری)\u003c/label>\u003cinput type=\"time\" data-plan=\"gaming\">\u003c/div>\u003c/div>\u003cdiv class=\"timerline\">\u003cdiv>\u003cdiv class=\"timer\" id=\"timer-gaming\">00:00:00\u003c/div>\u003cdiv class=\"hint\" id=\"hint-gaming\">آماده شروع\u003c/div>\u003c/div>\u003csvg class=\"ring\" viewBox=\"0 0 48 48\">\u003ccircle class=\"track\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003ccircle class=\"progress\" id=\"ring-gaming\" cx=\"24\" cy=\"24\" r=\"20\"/>\u003c/svg>\u003c/div>\u003cdiv class=\"taskactions\">\u003cbutton class=\"glass primary\" data-action=\"start\" data-id=\"gaming\" data-fa=\"شروع گیم\" data-en=\"Start gaming\">شروع گیم\u003c/button>\u003cbutton class=\"glass gold\" data-action=\"finish\" data-id=\"gaming\" data-fa=\"بازیم تموم شد\" data-en=\"Game finished\">بازیم تموم شد\u003c/button>\u003c/div>\u003cdiv class=\"result\" id=\"result-gaming\">\u003cdiv class=\"mark\">—\u003c/div>\u003cdiv>\u003cstrong data-fa=\"منتظر نتیجه\" data-en=\"Waiting for result\">منتظر نتیجه\u003c/strong>\u003cspan data-fa=\"بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\" data-en=\"Actual time will be compared with your target.\">بعد از پایان، زمان واقعی با هدف مقایسه می‌شود.\u003c/span>\u003c/div>\u003c/div>\u003c/article>\u003c/div>\n\u003cdiv class=\"section\" id=\"projects\">\u003cdiv>\u003ch2 data-fa=\"لابراتوار پروژه‌ها\" data-en=\"Project lab\">لابراتوار پروژه‌ها\u003c/h2>\u003cspan class=\"hint\" data-fa=\"برای برنامه‌نویس‌ها؛ هدف روزانه و گزارش دقیق هر پروژه\" data-en=\"Daily coding goals and detailed project session reports\">برای برنامه‌نویس‌ها؛ هدف روزانه و گزارش دقیق هر پروژه\u003c/span>\u003c/div>\u003cspan class=\"tag\">DEV MODE\u003c/span>\u003c/div>\n\u003csection class=\"task\">\u003cdiv class=\"taskhead\">\u003cdiv class=\"taskicon\">⌘\u003c/div>\u003cdiv>\u003ch3 data-fa=\"ساخت پروژه\" data-en=\"Create a project\">ساخت پروژه\u003c/h3>\u003cp data-fa=\"اسم پروژه، زمان روزانه و توضیحات را وارد کن.\" data-en=\"Add a project name, daily time and description.\">اسم پروژه، زمان روزانه و توضیحات را وارد کن.\u003c/p>\u003c/div>\u003c/div>\u003cform id=\"projectForm\" class=\"projectform\" style=\"margin-top:17px\">\u003cdiv class=\"field\">\u003clabel data-fa=\"نام پروژه\" data-en=\"Project name\">نام پروژه\u003c/label>\u003cinput id=\"pname\" maxlength=\"60\" required placeholder=\"I VANTA v2\">\u003c/div>\u003cdiv class=\"field\">\u003clabel data-fa=\"زمان روزانه (ساعت)\" data-en=\"Daily hours\">زمان روزانه (ساعت)\u003c/label>\u003cinput id=\"phours\" type=\"number\" min=\".25\" max=\"12\" step=\".25\" value=\"2\" required>\u003c/div>\u003cdiv class=\"field wide\">\u003clabel data-fa=\"توضیحات پروژه\" data-en=\"Project description\">توضیحات پروژه\u003c/label>\u003ctextarea id=\"pdesc\" maxlength=\"600\" required placeholder=\"امروز قراره چی بسازی؟\">\u003c/textarea>\u003c/div>\u003cbutton class=\"glass primary\" type=\"submit\" data-fa=\"＋ ساخت پروژه\" data-en=\"＋ Create project\">＋ ساخت پروژه\u003c/button>\u003c/form>\u003c/section>\n\u003cdiv class=\"projectlist\" id=\"projectList\">\u003cdiv class=\"empty\" data-fa=\"هنوز پروژه‌ای نساختی. اولین پروژه‌ات رو بساز.\" data-en=\"No projects yet. Create your first one.\">هنوز پروژه‌ای نساختی. اولین پروژه‌ات رو بساز.\u003c/div>\u003c/div>\n\u003cdiv class=\"section\" id=\"upgradeTop\">\u003cdiv>\u003ch2 data-fa=\"مرکز فرماندهی VANTA\" data-en=\"VANTA command center\">مرکز فرماندهی VANTA\u003c/h2>\u003cspan class=\"hint\" data-fa=\"پیشرفتت رو بازی کن؛ هر قدم حساب می‌شه.\" data-en=\"Gamify your progress. Every step counts.\">پیشرفتت رو بازی کن؛ هر قدم حساب می‌شه.\u003c/span>\u003c/div>\u003cspan class=\"level-badge\" id=\"levelBadge\">LEVEL 1 · 0 XP\u003c/span>\u003c/div>\n\u003cdiv class=\"upgrade-grid\">\n\u003csection class=\"upgrade-panel\">\u003cdiv class=\"micro\">\u003cspan data-fa=\"پروفایل پیشرفت\" data-en=\"Progress profile\">پروفایل پیشرفت\u003c/span>\u003cspan id=\"xpNext\">0 / 100 XP\u003c/span>\u003c/div>\u003ch3 id=\"levelTitle\" data-fa=\"تازه‌کار\" data-en=\"Rookie\">تازه‌کار\u003c/h3>\u003cdiv class=\"xpbar\">\u003cspan id=\"xpFill\">\u003c/span>\u003c/div>\u003cdiv class=\"micro\">\u003cspan data-fa=\"XP کل\" data-en=\"Total XP\">XP کل\u003c/span>\u003cb id=\"xpTotal\">0\u003c/b>\u003c/div>\u003cdiv class=\"upgrade-actions\">\u003cbutton class=\"glass small\" id=\"themeBtn\" data-fa=\"تغییر تم\" data-en=\"Change theme\">تغییر تم\u003c/button>\u003cbutton class=\"glass small\" id=\"soundBtn\" data-fa=\"صدا: خاموش\" data-en=\"Sound: off\">صدا: خاموش\u003c/button>\u003c/div>\u003c/section>\n\u003csection class=\"upgrade-panel\">\u003cdiv class=\"micro\">\u003cspan data-fa=\"چالش روزانه\" data-en=\"Daily quest\">چالش روزانه\u003c/span>\u003cspan id=\"questDate\">\u003c/span>\u003c/div>\u003ch3 id=\"questTitle\">ماموریت امروز\u003c/h3>\u003cp id=\"questDesc\" class=\"muted\" style=\"margin:6px 0\">یک فعالیت را کامل کن تا XP بگیری.\u003c/p>\u003cdiv class=\"quest\" id=\"questStatus\">\u003cspan class=\"qmark\">◎\u003c/span>\u003cdiv>\u003cb id=\"questStatusTitle\">در انتظار انجام\u003c/b>\u003cdiv class=\"hint\" id=\"questStatusDesc\">با ثبت یک فعالیت تکمیل می‌شود.\u003c/div>\u003c/div>\u003c/div>\u003cdiv class=\"upgrade-actions\">\u003cbutton class=\"glass primary\" id=\"rerollQuest\" data-fa=\"چالش جدید\" data-en=\"New challenge\">چالش جدید\u003c/button>\u003c/div>\u003c/section>\n\u003csection class=\"upgrade-panel\">\u003cdiv class=\"micro\">\u003cspan data-fa=\"نمودار عملکرد\" data-en=\"Performance chart\">نمودار عملکرد\u003c/span>\u003cspan data-fa=\"۷ روز اخیر\" data-en=\"Last 7 days\">۷ روز اخیر\u003c/span>\u003c/div>\u003ch3 data-fa=\"ریتم پیشرفتت\" data-en=\"Your progress rhythm\">ریتم پیشرفتت\u003c/h3>\u003cdiv class=\"chartbox\">\u003ccanvas id=\"weekChart\" aria-label=\"Weekly progress chart\">\u003c/canvas>\u003c/div>\u003cdiv class=\"bar-labels\">\u003cspan data-fa=\"زمان ثبت‌شده\" data-en=\"Time logged\">زمان ثبت‌شده\u003c/span>\u003cspan id=\"weekTotal\">0 h\u003c/span>\u003c/div>\u003c/section>\n\u003csection class=\"upgrade-panel\">\u003cdiv class=\"micro\">\u003cspan data-fa=\"مدیریت اطلاعات\" data-en=\"Data management\">مدیریت اطلاعات\u003c/span>\u003cspan style=\"color:var(--green)\">LOCAL ONLY\u003c/span>\u003c/div>\u003ch3 data-fa=\"اطلاعاتت دست خودته\" data-en=\"Your data stays yours\">اطلاعاتت دست خودته\u003c/h3>\u003cp class=\"muted\" data-fa=\"از گزارش‌ها و پروژه‌ها فایل پشتیبان بگیر یا بعداً آن را برگردان.\" data-en=\"Export a backup of your reports and projects, or restore it later.\">از گزارش‌ها و پروژه‌ها فایل پشتیبان بگیر یا بعداً آن را برگردان.\u003c/p>\u003cdiv class=\"upgrade-actions\">\u003cbutton class=\"glass primary\" id=\"exportData\" data-fa=\"خروجی پشتیبان\" data-en=\"Export backup\">خروجی پشتیبان\u003c/button>\u003cbutton class=\"glass\" id=\"importData\" data-fa=\"بازیابی فایل\" data-en=\"Restore file\">بازیابی فایل\u003c/button>\u003cinput id=\"importFile\" type=\"file\" accept=\"application/json,.json\" hidden>\u003c/div>\u003c/section>\n\u003c/div>\n\u003cdiv class=\"note\">\u003cb data-fa=\"حریم خصوصی:\" data-en=\"Privacy:\">حریم خصوصی:\u003c/b> \u003cspan data-fa=\"اسم، تنظیمات، تایمرها و گزارش‌ها فقط در حافظه همین مرورگر ذخیره می‌شوند؛ ثبت‌نام و Firebase وجود ندارد. با پاک‌کردن داده‌های مرورگر ممکن است اطلاعات حذف شود.\" data-en=\"Your name, settings, timers and reports stay in this browser. No account or Firebase. Clearing browser data may erase them.\">اسم، تنظیمات، تایمرها و گزارش‌ها فقط در حافظه همین مرورگر ذخیره می‌شوند؛ ثبت‌نام و Firebase وجود ندارد. با پاک‌کردن داده‌های مرورگر ممکن است اطلاعات حذف شود.\u003c/span>\u003cbr>\u003cspan data-fa=\"اعلان پایان کار به اجازه مرورگر نیاز دارد و در بعضی گوشی‌ها وقتی Chrome کاملاً بسته است تضمین‌شده نیست.\" data-en=\"Notifications require permission and may not fire if Chrome is fully closed on some phones.\">اعلان پایان کار به اجازه مرورگر نیاز دارد و در بعضی گوشی‌ها وقتی Chrome کاملاً بسته است تضمین‌شده نیست.\u003c/span>\u003c/div>\u003c/main>\u003cfooter>I VANTA · BUILD YOUR DAY, LEVEL UP YOUR LIFE\u003c/footer>\u003cdiv class=\"toast\" id=\"toast\">\u003c/div>\n\u003cscript>\nconst $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],KEY=\"ivanta_local_planner_v1\";\nconst initial={name:\"\",lang:\"fa\",days:{},projects:[],logs:[]};let state;try{state={...initial,...JSON.parse(localStorage.getItem(KEY)||\"{}\")}}catch{state={...initial}} state.xp=Number(state.xp)||0;state.questDate=state.questDate||\"\";state.questDone=!!state.questDone;state.questIndex=Number.isInteger(state.questIndex)?state.questIndex:0;state.theme=state.theme||\"blue\";state.sound=!!state.sound;\nlet toastTimer,installEvent=null;\nconst tr={fa:{start:\"شروع شد\",running:\"در حال اجرا\",ready:\"آماده شروع\",done:\"ثبت شد\",not:\"هنوز شروع نشده\",sleepWait:\"در انتظار ثبت خواب\",target:\"هدف\",actual:\"زمان واقعی\",score:\"پایبندی\",great:\"عالی بودی!\",ok:\"قابل قبول بود؛ یکم بهتر می‌تونی عمل کنی.\",weak:\"این بار از برنامه خیلی دور شدی؛ فردا دوباره تلاش کن.\",exact:\"تقریباً دقیق طبق برنامه\",close:\"نزدیک هدف\",early:\"خیلی زود پایان دادی\",late:\"بیشتر از هدف طول کشید\",need:\"اول تایمر رو شروع کن.\",ask:\"آیا واقعاً این کار را تمام کردی؟\",created:\"پروژه ساخته شد.\",deleteAsk:\"این پروژه و گزارش‌هایش حذف شود؟\",delete:\"حذف پروژه\",startProject:\"شروع جلسه\",finishProject:\"پایان جلسه\",history:\"گزارش جلسات\",noHistory:\"هنوز جلسه‌ای ثبت نشده.\",noProjects:\"هنوز پروژه‌ای نساختی. اولین پروژه‌ات رو بساز.\",newDay:\"گزارش‌های امروز پاک می‌شود؛ پروژه‌ها می‌مانند. ادامه می‌دهی؟\",notify:\"اعلان فعال شد.\",deny:\"اجازه اعلان داده نشد.\",askName:\"اسمت چیه؟\",hello:\"خوش اومدی\",streamOver:\"زمان هدف استریم تموم شد؛ استریم به پایان رسید؟\",sleepOver:\"زمان خواب هدف تموم شد؛ بیدار شدی؟\",studyOver:\"زمان درس تموم شد؛ درست تموم شد؟\",gamingOver:\"زمان گیم تموم شد؛ بازیت تموم شد؟\",projectOver:\"زمان هدف پروژه تموم شد؛ جلسه تمام شد؟\",yes:\"بله، تمام شد\",later:\"هنوز نه\",targetHours:\"هدف\",hours:\"ساعت\",minutes:\"دقیقه\",finished:\"تمام شده\",planned:\"هدف روزانه\",remove:\"حذف\",privacy:\"ذخیره فقط روی همین دستگاه\"},en:{start:\"Started\",running:\"Running\",ready:\"Ready to start\",done:\"Recorded\",not:\"Not started\",sleepWait:\"Waiting for sleep record\",target:\"Target\",actual:\"Actual time\",score:\"Adherence\",great:\"Excellent work!\",ok:\"Acceptable — you can do a little better.\",weak:\"You were far from your plan. Try again tomorrow.\",exact:\"Right on target\",close:\"Close to target\",early:\"Finished much earlier\",late:\"Took longer than planned\",need:\"Start the timer first.\",ask:\"Did you actually finish this activity?\",created:\"Project created.\",deleteAsk:\"Delete this project and its reports?\",delete:\"Delete project\",startProject:\"Start session\",finishProject:\"Finish session\",history:\"Session history\",noHistory:\"No sessions recorded yet.\",noProjects:\"No projects yet. Create your first one.\",newDay:\"Today's records will clear; projects remain. Continue?\",notify:\"Notifications enabled.\",deny:\"Notification permission denied.\",askName:\"What should we call you?\",hello:\"Welcome\",streamOver:\"Stream target elapsed. Did you end the stream?\",sleepOver:\"Sleep target elapsed. Are you awake?\",studyOver:\"Study target elapsed. Did you finish?\",gamingOver:\"Gaming target elapsed. Did you finish?\",projectOver:\"Project target elapsed. Did you finish?\",yes:\"Yes, finished\",later:\"Not yet\",targetHours:\"Target\",hours:\"hours\",minutes:\"min\",finished:\"Finished\",planned:\"Daily target\",remove:\"Delete\",privacy:\"Saved on this device only\"}};\nconst t=k=>(tr[state.lang]||tr.fa)[k]||k;\nfunction save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch{}}\nfunction toast(s){let e=$(\"#toast\");e.textContent=s;e.classList.add(\"on\");clearTimeout(toastTimer);toastTimer=setTimeout(()=>e.classList.remove(\"on\"),2800)}\nfunction dayKey(){let d=new Date();return d.getFullYear()+\"-\"+(d.getMonth()+1)+\"-\"+d.getDate()}\nfunction day(){return state.days[dayKey()]||(state.days[dayKey()]={})}\nfunction rec(id){return day()[id]||(day()[id]={})}\nfunction target(id){let n=Number($(`[data-target=\"${id}\"]`).value);return Math.max(900,Math.min(18*3600,(n||1)*3600))}\nfunction fmt(s){s=Math.max(0,Math.floor(s));return [Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(n=>String(n).padStart(2,\"0\")).join(\":\")}\nfunction duration(s){let m=Math.round(s/60);return m>=60?Math.floor(m/60)+\" \"+t(\"hours\")+(m%60?\" \"+m%60+\" \"+t(\"minutes\"):\"\"):m+\" \"+t(\"minutes\")}\nfunction rating(a,g){let d=Math.abs(a-g)/g,ratio=a/g;if(d\u003c=.1)return{c:\"good\",mark:\"✓\",title:t(\"great\"),desc:t(\"exact\"),score:Math.round((1-d)*100)};if(d\u003c=.25)return{c:\"good\",mark:\"≈\",title:t(\"ok\"),desc:t(\"close\"),score:Math.round((1-d)*100)};return{c:\"bad\",mark:\"!\",title:t(\"weak\"),desc:ratio\u003c.75?t(\"early\"):t(\"late\"),score:Math.max(0,Math.round((1-d)*100))}}\nfunction paintResult(id,r){if(!r?.result)return;let el=$(\"#result-\"+id),v=r.result;el.className=\"result \"+v.rating.c;el.querySelector(\".mark\").textContent=v.rating.mark;el.querySelector(\"strong\").textContent=v.rating.title;el.querySelector(\"span\").textContent=`${t(\"actual\")}: ${duration(v.actual)} · ${t(\"target\")}: ${duration(v.target)} · ${t(\"score\")}: ${v.rating.score}% — ${v.rating.desc}`}\nfunction renderTask(id){let r=rec(id),run=!!r.start,elapsed=run?(Date.now()-r.start)/1000:(r.lastActual||0),goal=r.goal||target(id);$(\"#timer-\"+id).textContent=fmt(elapsed);$(\"#timer-\"+id).classList.toggle(\"active\",run);$(\"#hint-\"+id).textContent=run?t(\"running\"):r.result?t(\"done\"):t(\"ready\");$(\"#ring-\"+id).style.strokeDashoffset=126-126*Math.min(1,elapsed/goal);$(`[data-action=\"start\"][data-id=\"${id}\"]`).disabled=run;$(`[data-action=\"finish\"][data-id=\"${id}\"]`).disabled=!run;paintResult(id,r)}\nfunction startTask(id){let r=rec(id);if(r.start)return toast(t(\"running\"));checkQuest(\"start\");r.start=Date.now();r.goal=target(id);r.notified=false;delete r.result;save();renderTask(id);toast(t(\"start\"))}\nfunction finishTask(id,skipConfirm=false){let r=rec(id);if(!r.start)return toast(t(\"need\"));if(!skipConfirm&&!confirm(t(\"ask\")))return;let a=Math.floor((Date.now()-r.start)/1000),g=r.goal||target(id),rt=rating(a,g);r.lastActual=a;r.result={actual:a,target:g,rating:rt};delete r.start;delete r.notified;state.logs.unshift({id,actual:a,target:g,at:Date.now(),rating:rt});state.xp=(Number(state.xp)||0)+Math.max(5,Math.round(rt.score/5));save();renderXP();checkQuest(\"finish\");renderTask(id);summary();toast(t(\"done\"));sendNotice(id,duration(a))}\nfunction summary(){for(let id of [\"stream\",\"study\",\"gaming\",\"sleep\"]){let r=rec(id),s=r.start?(Date.now()-r.start)/1000:(r.lastActual||0);$(\"#sum-\"+id).textContent=id===\"sleep\"&&!r.start&&!r.lastActual?\"هدف ۹ ساعت\":duration(s);$(\"#sumhint-\"+id).textContent=r.start?t(\"running\"):r.result?r.result.rating.title:id===\"sleep\"?t(\"sleepWait\"):t(\"not\")}}\nfunction sendNotice(id,body){if(\"Notification\"in window&&Notification.permission===\"granted\")try{new Notification(\"I VANTA\",{body: id+\": \"+body,icon:\"icon.svg\"})}catch{}}\n$$(\"[data-action]\").forEach(b=>b.onclick=()=>b.dataset.action===\"start\"?startTask(b.dataset.id):finishTask(b.dataset.id));\nfunction renderProjects(){let list=$(\"#projectList\");list.replaceChildren();if(!state.projects.length){let e=document.createElement(\"div\");e.className=\"empty\";e.textContent=t(\"noProjects\");list.append(e);return}for(let p of state.projects){let box=document.createElement(\"article\");box.className=\"project\";let h=document.createElement(\"h3\");h.textContent=p.name;let desc=document.createElement(\"p\");desc.textContent=p.desc;let chips=document.createElement(\"div\");chips.className=\"chips\";let ch=document.createElement(\"span\");ch.className=\"chip\";ch.textContent=t(\"planned\")+\": \"+p.hours+\" \"+t(\"hours\");let actual=p.start?(Date.now()-p.start)/1000:(p.lastActual||0);let ch2=document.createElement(\"span\");ch2.className=\"chip\";ch2.textContent=t(\"actual\")+\": \"+duration(actual);chips.append(ch,ch2);let tm=document.createElement(\"div\");tm.className=\"timer\";tm.id=\"pt-\"+p.id;tm.textContent=fmt(actual);let acts=document.createElement(\"div\");acts.className=\"taskactions\";let start=document.createElement(\"button\");start.className=\"glass primary\";start.textContent=p.start?t(\"running\"):t(\"startProject\");start.disabled=!!p.start;start.onclick=()=>{p.start=Date.now();p.goal=p.hours*3600;delete p.result;save();renderProjects()};let finish=document.createElement(\"button\");finish.className=\"glass gold\";finish.textContent=t(\"finishProject\");finish.disabled=!p.start;finish.onclick=()=>finishProject(p.id);let del=document.createElement(\"button\");del.className=\"glass small\";del.textContent=t(\"remove\");del.onclick=()=>{if(confirm(t(\"deleteAsk\"))){state.projects=state.projects.filter(x=>x.id!==p.id);state.logs=state.logs.filter(x=>x.projectId!==p.id);save();renderProjects()}};acts.append(start,finish,del);box.append(h,desc,chips,tm,acts);if(p.result){let rr=document.createElement(\"div\");rr.className=\"result \"+p.result.rating.c;rr.innerHTML=\"\u003cdiv class='mark'>\u003c/div>\u003cdiv>\u003cstrong>\u003c/strong>\u003cspan>\u003c/span>\u003c/div>\";rr.querySelector(\".mark\").textContent=p.result.rating.mark;rr.querySelector(\"strong\").textContent=p.result.rating.title;rr.querySelector(\"span\").textContent=`${t(\"actual\")}: ${duration(p.result.actual)} · ${t(\"target\")}: ${duration(p.result.target)} · ${t(\"score\")}: ${p.result.rating.score}% — ${p.result.rating.desc}`;box.append(rr)}let hist=state.logs.filter(l=>l.projectId===p.id).slice(0,6);let title=document.createElement(\"p\");title.textContent=t(\"history\");box.append(title);if(hist.length){let table=document.createElement(\"table\");table.className=\"history\";table.innerHTML=\"\u003ctr>\u003cth>Date\u003c/th>\u003cth>Actual\u003c/th>\u003cth>Target\u003c/th>\u003cth>Score\u003c/th>\u003c/tr>\";hist.forEach(l=>{let tr=document.createElement(\"tr\");[new Date(l.at).toLocaleDateString(),duration(l.actual),duration(l.target),l.rating.score+\"%\"].forEach(v=>{let td=document.createElement(\"td\");td.textContent=v;tr.append(td)});table.append(tr)});box.append(table)}else{let p0=document.createElement(\"p\");p0.textContent=t(\"noHistory\");box.append(p0)}list.append(box)}}\nfunction finishProject(id){let p=state.projects.find(x=>x.id===id);if(!p?.start)return;if(!confirm(t(\"ask\")))return;let a=(Date.now()-p.start)/1000,g=p.goal||p.hours*3600,rt=rating(a,g);p.lastActual=a;p.result={actual:a,target:g,rating:rt};delete p.start;state.logs.unshift({projectId:id,actual:a,target:g,at:Date.now(),rating:rt});state.xp=(Number(state.xp)||0)+Math.max(5,Math.round(rt.score/5));save();renderXP();checkQuest(\"project\");renderProjects();toast(t(\"done\"));sendNotice(\"project\",duration(a))}\n$(\"#projectForm\").onsubmit=e=>{e.preventDefault();let name=$(\"#pname\").value.trim(),desc=$(\"#pdesc\").value.trim(),hours=Number($(\"#phours\").value);if(!name||!desc||hours\u003c=0||hours>12)return;state.projects.unshift({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),name,desc,hours});save();e.target.reset();$(\"#phours\").value=2;renderProjects();toast(t(\"created\"))};\nconst quests=[{fa:[\"شروع‌کننده\",\"یک فعالیت روزانه را شروع کن.\",\"ثبت اولین فعالیت امروز\"],en:[\"Warm-up\",\"Start one daily activity.\",\"Log your first activity today\"]},{fa:[\"قدم محکم\",\"یک فعالیت را به پایان برسان.\",\"تکمیل یک فعالیت\"],en:[\"Solid step\",\"Finish one activity.\",\"Complete one activity\"]},{fa:[\"سازنده\",\"روی یکی از پروژه‌هات کار کن.\",\"ثبت جلسه پروژه\"],en:[\"Builder\",\"Work on one of your projects.\",\"Log a project session\"]},{fa:[\"متعادل\",\"دو فعالیت مختلف را ثبت کن.\",\"ثبت دو فعالیت متفاوت\"],en:[\"Balanced\",\"Log two different activities.\",\"Log two different activities\"]},{fa:[\"استمرار\",\"امروز یک هدف را کامل کن.\",\"کامل کردن یک هدف\"],en:[\"Consistency\",\"Complete one goal today.\",\"Complete one goal\"]}];\nfunction levelInfo(){let xp=Math.max(0,state.xp||0),level=Math.floor(xp/100)+1,into=xp%100;return{xp,level,into,title:level>=20?(state.lang===\"fa\"?\"افسانه‌ای\":\"Legend\"):level>=10?(state.lang===\"fa\"?\"نخبه\":\"Elite\"):level>=5?(state.lang===\"fa\"?\"حرفه‌ای\":\"Pro\"):(state.lang===\"fa\"?\"تازه‌کار\":\"Rookie\")}}\nfunction renderXP(){let v=levelInfo();if($(\"#levelBadge\")){$(\"#levelBadge\").textContent=`LEVEL ${v.level} · ${v.xp} XP`;$(\"#levelTitle\").textContent=v.title;$(\"#xpTotal\").textContent=v.xp;$(\"#xpNext\").textContent=`${v.into} / 100 XP`;$(\"#xpFill\").style.width=v.into+\"%\"}}\nfunction awardXP(n,reason){state.xp=(Number(state.xp)||0)+n;save();renderXP();if(state.sound)playSound();toast((state.lang===\"fa\"?`+${n} XP · `:`+${n} XP · `)+reason);let p=$(\"#upgradeTop\");if(p){p.classList.remove(\"spark\");void p.offsetWidth;p.classList.add(\"spark\")}}\nfunction questToday(){let d=dayKey();if(state.questDate!==d){state.questDate=d;state.questDone=false;state.questIndex=Math.floor(Math.random()*quests.length);save()}let q=quests[state.questIndex%quests.length][state.lang]||quests[0].fa;$(\"#questDate\").textContent=d;$(\"#questTitle\").textContent=q[0];$(\"#questDesc\").textContent=q[1];$(\"#questStatusTitle\").textContent=state.questDone?(state.lang===\"fa\"?\"ماموریت کامل شد!\":\"Quest completed!\"):(state.lang===\"fa\"?\"در انتظار انجام\":\"Waiting for completion\");$(\"#questStatusDesc\").textContent=state.questDone?(state.lang===\"fa\"?\"+25 XP دریافت کردی\":\"You earned +25 XP\"):q[2];$(\"#questStatus\").classList.toggle(\"done\",state.questDone);$(\"#questStatus .qmark\").textContent=state.questDone?\"✓\":\"◎\"}\nfunction checkQuest(kind){if(state.questDone)return;let q=quests[state.questIndex%quests.length];let title=q[0];let done=(state.questIndex%quests.length===0)?kind===\"start\":(state.questIndex%quests.length===1)?kind===\"finish\":(state.questIndex%quests.length===2)?kind===\"project\":(state.questIndex%quests.length===3)?(new Set(state.logs.filter(l=>new Date(l.at).toDateString()===new Date().toDateString()).map(l=>l.id||l.projectId)).size>=2):kind===\"finish\";if(done){state.questDone=true;state.xp=(Number(state.xp)||0)+25;save();questToday();renderXP();toast(state.lang===\"fa\"?\"چالش روزانه کامل شد! +25 XP\":\"Daily quest complete! +25 XP\");if(state.sound)playSound()}}\nfunction playSound(){try{let C=window.AudioContext||window.webkitAudioContext;if(!C)return;let c=new C(),o=c.createOscillator(),g=c.createGain();o.type=\"sine\";o.frequency.setValueAtTime(660,c.currentTime);o.frequency.exponentialRampToValueAtTime(990,c.currentTime+.12);g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.2);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.2);o.onended=()=>c.close()}catch{}}\nfunction applyTheme(){document.body.classList.remove(\"theme-cyan\",\"theme-green\",\"theme-violet\");if(state.theme!==\"blue\")document.body.classList.add(\"theme-\"+state.theme);let names={blue:state.lang===\"fa\"?\"آبی نئونی\":\"Neon blue\",cyan:state.lang===\"fa\"?\"فیروزه‌ای\":\"Cyber cyan\",green:state.lang===\"fa\"?\"سبز نئونی\":\"Neon green\",violet:state.lang===\"fa\"?\"بنفش\":\"Violet\"};$(\"#themeBtn\").textContent=(state.lang===\"fa\"?\"تم: \":\"Theme: \")+names[state.theme||\"blue\"];$(\"#soundBtn\").textContent=state.sound?(state.lang===\"fa\"?\"صدا: روشن\":\"Sound: on\"):(state.lang===\"fa\"?\"صدا: خاموش\":\"Sound: off\");save()}\nfunction drawChart(){let c=$(\"#weekChart\");if(!c)return;let rect=c.getBoundingClientRect();if(!rect.width)return;let dpr=window.devicePixelRatio||1;c.width=Math.round(rect.width*dpr);c.height=Math.round(rect.height*dpr);let x=c.getContext(\"2d\");x.scale(dpr,dpr);let w=rect.width,h=rect.height,pad=18,vals=[],labels=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let key=d.getFullYear()+\"-\"+(d.getMonth()+1)+\"-\"+d.getDate(),obj=state.days[key]||{};let total=0;for(let id of [\"stream\",\"sleep\",\"study\",\"gaming\"]){let r=obj[id];if(r)total+=r.lastActual||((r.start)?Math.max(0,(Date.now()-r.start)/1000):0)}for(let l of state.logs||[])if(l.at&&new Date(l.at).toDateString()===d.toDateString())total+=l.projectId?l.actual:0;vals.push(total/3600);labels.push((d.getMonth()+1)+\"/\"+d.getDate())}let max=Math.max(1,...vals);x.strokeStyle=\"rgba(160,190,220,.13)\";x.lineWidth=1;for(let j=0;j\u003c4;j++){let yy=pad+(h-pad*2)*j/3;x.beginPath();x.moveTo(pad,yy);x.lineTo(w-pad,yy);x.stroke()}let gap=(w-pad*2)/7,bw=Math.min(22,gap*.52);vals.forEach((v,i)=>{let bh=(h-pad*2)*v/max,xx=pad+gap*i+(gap-bw)/2,yy=h-pad-bh;let g=x.createLinearGradient(0,yy,0,h-pad);g.addColorStop(0,\"#58a9ff\");g.addColorStop(1,\"#68f0b0\");x.fillStyle=g;x.beginPath();x.roundRect?x.roundRect(xx,yy,bw,Math.max(3,bh),5):x.rect(xx,yy,bw,Math.max(3,bh));x.fill();x.fillStyle=\"#95a9c4\";x.font=\"9px system-ui\";x.textAlign=\"center\";x.fillText(labels[i],xx+bw/2,h-2)});$(\"#weekTotal\").textContent=vals.reduce((a,b)=>a+b,0).toFixed(1)+\" h\"}\nfunction exportBackup(){let payload={format:\"I-VANTA-BACKUP\",version:2,exportedAt:new Date().toISOString(),state};let blob=new Blob([JSON.stringify(payload,null,2)],{type:\"application/json\"}),url=URL.createObjectURL(blob),a=document.createElement(\"a\");a.href=url;a.download=\"ivanta-backup-\"+dayKey()+\".json\";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast(state.lang===\"fa\"?\"فایل پشتیبان آماده شد\":\"Backup file created\")}\nfunction importBackup(file){let reader=new FileReader();reader.onload=()=>{try{let data=JSON.parse(reader.result),incoming=data.state||data;if(!incoming||typeof incoming!==\"object\"||!incoming.days||!Array.isArray(incoming.projects)||!Array.isArray(incoming.logs))throw Error(\"bad\");if(!confirm(state.lang===\"fa\"?\"اطلاعات فعلی با نسخه پشتیبان جایگزین شود؟ بهتر است قبلش خروجی بگیری.\":\"Replace current data with this backup? Export a backup first.\"))return;state={...initial,...incoming};state.xp=Number(state.xp)||0;state.questDate=state.questDate||\"\";state.questDone=!!state.questDone;state.questIndex=Number(state.questIndex)||0;state.theme=state.theme||\"blue\";state.sound=!!state.sound;save();setLang();renderXP();questToday();applyTheme();drawChart();[\"stream\",\"sleep\",\"study\",\"gaming\"].forEach(renderTask);summary();renderProjects();toast(state.lang===\"fa\"?\"پشتیبان بازیابی شد\":\"Backup restored\")}catch{toast(state.lang===\"fa\"?\"فایل پشتیبان معتبر نیست\":\"Invalid backup file\")}};reader.readAsText(file)}\n$(\"#themeBtn\").onclick=()=>{let a=[\"blue\",\"cyan\",\"green\",\"violet\"];state.theme=a[(a.indexOf(state.theme)+1)%a.length];applyTheme();drawChart()};$(\"#soundBtn\").onclick=()=>{state.sound=!state.sound;applyTheme();if(state.sound)playSound()};$(\"#rerollQuest\").onclick=()=>{state.questIndex=(state.questIndex+1)%quests.length;state.questDate=dayKey();state.questDone=false;save();questToday();toast(state.lang===\"fa\"?\"چالش عوض شد\":\"Quest changed\")};$(\"#exportData\").onclick=exportBackup;$(\"#importData\").onclick=()=>$(\"#importFile\").click();$(\"#importFile\").onchange=e=>{if(e.target.files[0])importBackup(e.target.files[0]);e.target.value=\"\"};window.addEventListener(\"resize\",drawChart);\nfunction setLang(){document.documentElement.lang=state.lang;document.documentElement.dir=state.lang===\"fa\"?\"rtl\":\"ltr\";$$(\"[data-fa][data-en]\").forEach(el=>el.textContent=el.dataset[state.lang]);$(\"#lang\").textContent=state.lang===\"fa\"?\"EN / فارسی\":\"فارسی / EN\";$(\"#notify\").textContent=state.lang===\"fa\"?\"فعال‌سازی اعلان\":\"Enable notifications\";[\"stream\",\"sleep\",\"study\",\"gaming\"].forEach(renderTask);summary();renderProjects();if($(\"#themeBtn\")){let old=state.theme;applyTheme()}$(\"#greeting\").textContent=state.name?(state.lang===\"fa\"?\"خوش اومدی، \":\"Welcome, \")+state.name:\"\"}\n$(\"#lang\").onclick=()=>{state.lang=state.lang===\"fa\"?\"en\":\"fa\";save();setLang()};\n$(\"#goDaily\").onclick=()=>{$(\"#daily\").scrollIntoView({behavior:\"smooth\"});if(!state.name)changeName()};\n$(\"#goProjects\").onclick=()=>$(\"#projects\").scrollIntoView({behavior:\"smooth\"});\nfunction changeName(){let n=prompt(t(\"askName\"),state.name||\"\");if(n&&n.trim()){state.name=n.trim().slice(0,40);save();setLang()}}$(\"#changeName\").onclick=changeName;\n$(\"#resetDay\").onclick=()=>{if(confirm(t(\"newDay\"))){delete state.days[dayKey()];save();[\"stream\",\"sleep\",\"study\",\"gaming\"].forEach(renderTask);summary();toast(t(\"done\"))}};\n$(\"#notify\").onclick=async()=>{if(!(\"Notification\"in window)){toast(\"Notification not supported\");return}let p=await Notification.requestPermission();toast(p===\"granted\"?t(\"notify\"):t(\"deny\"))};\nfunction tick(){let d=new Date();$(\"#clock\").textContent=[d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,\"0\")).join(\":\");[\"stream\",\"sleep\",\"study\",\"gaming\"].forEach(id=>{let r=rec(id);renderTask(id);if(r.start&&r.goal&&(Date.now()-r.start)>=r.goal*1000&&!r.notified){r.notified=true;save();let key=id===\"stream\"?\"streamOver\":id===\"sleep\"?\"sleepOver\":id===\"study\"?\"studyOver\":\"gamingOver\";let msg=tr[state.lang][key];if(\"Notification\"in window&&Notification.permission===\"granted\")try{new Notification(\"I VANTA\",{body:msg,icon:\"icon.svg\"})}catch{}if(document.visibilityState===\"visible\"&&confirm(msg+\"\\n\"+t(\"yes\")+\"?\"))finishTask(id,true)}});state.projects.forEach(p=>{let el=$(\"#pt-\"+p.id);if(el&&p.start)el.textContent=fmt((Date.now()-p.start)/1000);if(p.start&&p.goal&&(Date.now()-p.start)>=p.goal*1000&&!p.notified){p.notified=true;save();if(\"Notification\"in window&&Notification.permission===\"granted\")try{new Notification(\"I VANTA\",{body:tr[state.lang].projectOver,icon:\"icon.svg\"})}catch{}if(document.visibilityState===\"visible\"&&confirm(tr[state.lang].projectOver+\"\\n\"+t(\"yes\")+\"?\"))finishProject(p.id)}});summary()}\n$(\"#install\").onclick=async()=>{if(installEvent){installEvent.prompt();await installEvent.userChoice;installEvent=null;$(\"#install\").hidden=true}else toast(\"Chrome menu → Add to Home screen\")};window.addEventListener(\"beforeinstallprompt\",e=>{e.preventDefault();installEvent=e;$(\"#install\").hidden=false});\nif(\"serviceWorker\"in navigator&&/^https?:$/.test(location.protocol))addEventListener(\"load\",()=>navigator.serviceWorker.register(\"./sw.js\").catch(()=>{}));\nsetLang();renderXP();questToday();applyTheme();drawChart();[\"stream\",\"sleep\",\"study\",\"gaming\"].forEach(renderTask);summary();renderProjects();if(!state.name)setTimeout(changeName,250);setInterval(tick,1000);setInterval(drawChart,15000);tick();\n\u003c/script>\u003c/body>\u003c/html>";
+  const launch = document.getElementById('plannerLaunch');
+  const shell = document.getElementById('plannerShell');
+  const frame = document.getElementById('plannerFrame');
+  const close = document.getElementById('plannerClose');
+  let loaded = false;
+  function openPlanner(){
+    if(!loaded){ frame.srcdoc = plannerDocument; loaded = true; }
+    shell.classList.add('open'); shell.setAttribute('aria-hidden','false');
+    document.body.style.overflow='hidden';
+  }
+  function closePlanner(){ shell.classList.remove('open'); shell.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+  launch?.addEventListener('click',openPlanner);
+  close?.addEventListener('click',closePlanner);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape' && shell.classList.contains('open')) closePlanner();});
+})();
+</script>
+
+<script type="module">
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  push,
+  onValue,
+  update,
+  runTransaction,
+  remove
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+
+/* =========================================================
+   FIREBASE CONFIG — بدون تغییر
+========================================================= */
+
+const firebaseConfig={
+  apiKey:"AIzaSyBsncHhhlqIi6qpf3hYtb0DOnq8Zjb-zpI",
+  authDomain:"avanta-3db7e.firebaseapp.com",
+  databaseURL:"https://avanta-3db7e-default-rtdb.firebaseio.com",
+  projectId:"avanta-3db7e",
+  storageBucket:"avanta-3db7e.firebasestorage.app",
+  messagingSenderId:"879564538420",
+  appId:"1:879564538420:web:a0fc85cc43a9347d92c061"
+};
+
+const ADMIN_UID="NNY1ymTknwREwMo16ZI3lgFEni23";
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
+
+const $=id=>document.getElementById(id);
+
+let user=null;
+let profile=null;
+let activeChat=null;
+let chatMeta=null;
+let replyTo=null;
+let unsubs=[];
+let premiumEmojisCache=[];
+let premiumEmojisLoaded=false;
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+const toast=t=>{
+  const x=$("toast");
+  x.textContent=t;
+  x.classList.add("on");
+  clearTimeout(window._toast);
+  window._toast=setTimeout(()=>{
+    x.classList.remove("on");
+  },2400);
+};
+
+const esc=s=>String(s??"").replace(
+  /[&<>"']/g,
+  m=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[m])
+);
+
+function friendlyError(e){
+  const m={
+    "auth/popup-blocked":"Popup توسط مرورگر مسدود شد.",
+    "auth/popup-closed-by-user":"ورود لغو شد.",
+    "auth/network-request-failed":"اتصال اینترنت یا Firebase مشکل دارد.",
+    "auth/unauthorized-domain":"دامنه در Firebase مجاز نشده است.",
+    "auth/operation-not-allowed":"روش ورود در Firebase فعال نیست.",
+    "auth/admin-restricted-operation":"این عملیات در Firebase فعال نیست.",
+    "PERMISSION_DENIED":"Firebase Rules اجازه این عملیات را نمی‌دهد.",
+    "username/taken":"این Username قبلاً استفاده شده است.",
+    "username/invalid":"Username باید حداقل 3 کاراکتر داشته باشد.",
+    "community/username-taken":"این لینک/Username قبلاً استفاده شده است."
+  };
+
+  return m[e?.code]||e?.message||"خطای نامشخص";
+}
+
+function modal(t,h){
+  $("modalTitle").textContent=t;
+  $("modalBody").innerHTML=h;
+  $("modal").classList.add("on");
+}
+
+function closeModal(){
+  $("modal").classList.remove("on");
+}
+
+$("closeModal").onclick=closeModal;
+
+$("modal").onclick=e=>{
+  if(e.target===$("modal")) closeModal();
+};
+
+function normId(v){
+  return String(v||"")
+    .trim()
+    .replace(/^@/,"")
+    .toLowerCase()
+    .replace(/[^a-z0-9_]/g,"")
+    .slice(0,32);
+}
+
+function ownerUser(){
+  return !!user&&user.uid===ADMIN_UID;
+}
+
+function fileData(f){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result);
+    r.onerror=rej;
+    r.readAsDataURL(f);
+  });
+}
+
+function avatar(o,big=false){
+  const color=esc(
+    o?.profileColor||
+    profile?.profileColor||
+    "#7662ff"
+  );
+
+  return `
+    <div
+      class="avatar${big?" big":""}"
+      style="background:${color}"
+    >
+      ${
+        o?.photo
+        ? `<img src="${esc(o.photo)}" alt="">`
+        : esc(
+            (o?.name||"A")
+            .slice(0,1)
+            .toUpperCase()
+          )
+      }
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+$("googleLogin").onclick=async()=>{
+  try{
+    $("loginStatus").innerHTML=
+      `<span class="spinner"></span> در حال ورود...`;
+
+    await signInWithPopup(
+      auth,
+      new GoogleAuthProvider()
+    );
+  }catch(e){
+    $("loginStatus").textContent=friendlyError(e);
+    toast(friendlyError(e));
+  }
+};
+
+
+$("logoutBtn").onclick=()=>signOut(auth);
+
+
+/* =========================================================
+   USERNAME
+========================================================= */
+
+async function claimUsername(uid,username,oldUsername=""){
+  const n=normId(username);
+
+  if(!n||n.length<3){
+    throw Object.assign(
+      new Error("Username must be at least 3 characters"),
+      {code:"username/invalid"}
+    );
+  }
+
+  const old=normId(oldUsername);
+
+  if(old===n)return n;
+
+  const rr=ref(db,"usernames/"+n);
+
+  const tx=await runTransaction(
+    rr,
+    current=>{
+      if(current===null)return uid;
+      if(current===uid)return uid;
+      return;
+    }
+  );
+
+  if(!tx.committed){
+    throw Object.assign(
+      new Error("Username already taken"),
+      {code:"username/taken"}
+    );
+  }
+
+  if(old&&old!==n){
+    const oldRef=ref(db,"usernames/"+old);
+    const os=await get(oldRef);
+
+    if(os.exists()&&os.val()===uid){
+      await remove(oldRef);
+    }
+  }
+
+  return n;
+}
+
+
+/* =========================================================
+   COMMUNITY USERNAME
+========================================================= */
+
+async function claimCommunityUsername(
+  chatId,
+  username,
+  oldUsername=""
+){
+  const n=normId(username);
+  if(!n)return "";
+
+  const rr=ref(db,"communityUsernames/"+n);
+
+  const tx=await runTransaction(
+    rr,
+    current=>{
+      if(current===null)return chatId;
+      if(current===chatId)return chatId;
+      return;
+    }
+  );
+
+  if(!tx.committed){
+    throw Object.assign(
+      new Error("Community username already taken"),
+      {code:"community/username-taken"}
+    );
+  }
+
+  const old=normId(oldUsername);
+
+  if(old&&old!==n){
+    const or=ref(db,"communityUsernames/"+old);
+    const os=await get(or);
+
+    if(os.exists()&&os.val()===chatId){
+      await remove(or);
+    }
+  }
+
+  return n;
+}
+
+function communityLink(username,id){
+  const slug=normId(username);
+  return location.origin+
+    location.pathname+
+    "?join="+
+    encodeURIComponent(slug||id);
+}
+
+async function joinFromLink(){
+  const raw=new URLSearchParams(location.search).get("join");
+
+  if(!raw||!user)return;
+
+  try{
+    const q=normId(raw);
+
+    let chatId=q
+      ?(await get(
+          ref(db,"communityUsernames/"+q)
+        )).val()
+      :null;
+
+    if(!chatId)chatId=raw;
+
+    const cs=await get(ref(db,"chats/"+chatId));
+
+    if(!cs.exists()){
+      toast("لینک گروه یا کانال معتبر نیست");
+      return;
+    }
+
+    const meta=cs.val();
+
+    if(meta.type!=="group"&&meta.type!=="channel"){
+      return;
+    }
+
+    await set(
+      ref(db,`chatMembers/${chatId}/${user.uid}`),
+      {
+        role:meta.owner===user.uid?"owner":"member",
+        joinedAt:Date.now()
+      }
+    );
+
+    await set(
+      ref(db,`userChats/${user.uid}/${chatId}`),
+      meta
+    );
+
+    history.replaceState({}, "", location.pathname);
+
+    toast("با موفقیت وارد شدی");
+    startChatSubscription();
+
+  }catch(e){
+    toast(friendlyError(e));
+  }
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function ensureProfile(u){
+
+  const r=ref(db,"users/"+u.uid);
+  const s=await get(r);
+
+  if(!s.exists()){
+
+    const generatedUsername=
+      u.email?.split("@")[0]||
+      "guest_"+u.uid.slice(0,6);
+
+    const p={
+      uid:u.uid,
+      name:u.displayName||"ÀVanta User",
+      username:generatedUsername,
+      email:u.email||"",
+      photo:u.photoURL||"",
+      cover:"",
+      bio:"",
+      premium:u.uid===ADMIN_UID,
+      verified:u.uid===ADMIN_UID,
+      owner:u.uid===ADMIN_UID,
+      profileColor:"#7662ff",
+      nameEmoji:"",
+      createdAt:Date.now()
+    };
+
+    await set(r,p);
+    return p;
+  }
+
+  return s.val();
+}
+
+onAuthStateChanged(auth,async u=>{
+
+  user=u;
+
+  if(!u){
+    $("login").classList.remove("hide");
+    return;
+  }
+
+  $("login").classList.add("hide");
+
+  try{
+
+    profile=await ensureProfile(u);
+
+    try{
+      const n=normId(profile.username);
+
+      if(n){
+        const rs=await get(ref(db,"usernames/"+n));
+
+        if(!rs.exists()){
+          await set(ref(db,"usernames/"+n),u.uid);
+        }
+      }
+    }catch(e){}
+
+    $("adminBtn").style.display=
+      u.uid===ADMIN_UID?"block":"none";
+
+    renderAll();
+    subscribeUser();
+    startChatSubscription();
+    renderStories();
+    joinFromLink();
+
+  }catch(e){
+    toast(friendlyError(e));
+  }
+});
+
+
+/* =========================================================
+   LIVE USER DATA
+========================================================= */
+
+function subscribeUser(){
+
+  unsubs.forEach(f=>{
+    try{if(f)f()}catch(e){}
+  });
+
+  unsubs=[];
+
+  unsubs.push(
+    onValue(
+      ref(db,"users/"+user.uid),
+      s=>{
+        profile=s.val()||profile;
+        renderAll();
+      }
+    )
+  );
+
+  unsubs.push(
+    onValue(
+      ref(db,"contacts/"+user.uid),
+      renderContacts
+    )
+  );
+}
+
+
+/* =========================================================
+   CHAT SUBSCRIPTION
+========================================================= */
+
+function startChatSubscription(){
+
+  if(!user)return;
+
+  if(window.chatListUnsub){
+    window.chatListUnsub();
+  }
+
+  window.chatListUnsub=
+    onValue(
+      ref(db,"userChats/"+user.uid),
+      s=>{
+        window._chats=s.val()||{};
+        renderChats();
+      }
+    );
+}
+
+
+/* =========================================================
+   PROFILE RENDER
+========================================================= */
+
+function renderProfile(){
+
+  if(!profile)return;
+
+  $("bigAvatar").outerHTML=
+    avatar(profile,true).replace(
+      'class="avatar big"',
+      'class="avatar big" id="bigAvatar"'
+    );
+
+  $("profileName").textContent=
+    (profile.name||"ÀVanta User")+
+    (profile.nameEmoji?" "+profile.nameEmoji:"");
+
+  $("profileUsername").textContent=
+    "@"+(profile.username||"user");
+
+  $("profileBadges").innerHTML=
+    (ownerUser()
+      ?`<span class="badge">✓ ÀVanta Owner</span> `
+      :"")+
+    (profile.verified
+      ?`<span class="badge">✓ Verified</span> `
+      :"")+
+    (profile.premium
+      ?`<span class="badge">💎 ÀVanta Premium</span>`
+      :"");
+
+  $("profileBio").textContent=profile.bio||"";
+
+  $("profileCover").style.backgroundImage=
+    profile.cover
+    ?`url("${profile.cover}")`
+    :"";
+
+}
+
+
+/* =========================================================
+   CHAT LIST
+========================================================= */
+
+function renderChats(){
+
+  if(!user)return;
+
+  const box=$("chatList");
+  const data=window._chats||{};
+
+  const arr=Object
+    .entries(data)
+    .map(([id,v])=>({id,...v}))
+    .sort(
+      (a,b)=>
+        (b.updatedAt||0)-
+        (a.updatedAt||0)
+    );
+
+  box.innerHTML=arr.length
+    ?""
+    :`
+      <div class="empty">
+        هنوز چتی ندارید.
+        <br>
+        از ＋ یک چت، گروه یا کانال بسازید.
+      </div>
+    `;
+
+  arr.forEach(c=>{
+
+    const d=document.createElement("div");
+    d.className="row";
+
+    d.innerHTML=`
+      ${avatar(c)}
+      <div class="grow">
+        <b>${esc(c.name||"Chat")}</b>
+        <div class="muted small">
+          ${esc(c.lastMessage||c.type||"chat")}
+        </div>
+      </div>
+      <span class="muted small">${esc(c.type||"")}</span>
+    `;
+
+    d.onclick=()=>openChat(c);
+
+    box.appendChild(d);
+  });
+}
+
+
+/* =========================================================
+   CONTACTS
+========================================================= */
+
+function renderContacts(snap){
+
+  const box=$("contactsList");
+  const data=snap?.val?.()||{};
+
+  box.innerHTML="";
+
+  const arr=
+    Object.entries(data)
+    .map(([id,v])=>({id,...v}));
+
+  if(!arr.length){
+    box.innerHTML=`
+      <div class="empty">
+        مخاطبی ندارید.
+      </div>
+    `;
+    return;
+  }
+
+  arr.forEach(c=>{
+
+    const d=document.createElement("div");
+    d.className="row";
+
+    d.innerHTML=`
+      ${avatar(c)}
+      <div class="grow">
+        <b>${esc(c.name)}</b>
+        <div class="muted small">
+          @${esc(c.username||"")}
+        </div>
+      </div>
+      <button class="btn primary">Chat</button>
+    `;
+
+    d.onclick=()=>openUser(c);
+
+    d.querySelector("button").onclick=e=>{
+      e.stopPropagation();
+      openPrivate(c);
+    };
+
+    box.appendChild(d);
+  });
+}
+
+
+/* =========================================================
+   FIND USER
+========================================================= */
+
+async function findUser(q){
+
+  q=q.replace(/^@/,"").trim();
+
+  const direct=await get(ref(db,"users/"+q));
+
+  if(direct.exists()){
+    return {
+      uid:q,
+      ...direct.val()
+    };
+  }
+
+  const s=await get(ref(db,"users"));
+
+  for(
+    const [uid,p]
+    of Object.entries(s.val()||{})
+  ){
+    if(
+      String(p.username||"").toLowerCase()===
+      q.toLowerCase()
+    ){
+      return {
+        uid,
+        ...p
+      };
+    }
+  }
+
+  return null;
+}
+
+$("findContact").onclick=async()=>{
+
+  const q=$("contactInput").value.trim();
+
+  if(!q){
+    return toast("UID یا username را وارد کن");
+  }
+
+  try{
+
+    const p=await findUser(q);
+
+    if(!p){
+      return toast("کاربر پیدا نشد");
+    }
+
+    if(p.uid===user.uid){
+      return toast("نمی‌توانی خودت را اضافه کنی");
+    }
+
+    await set(
+      ref(db,`contacts/${user.uid}/${p.uid}`),
+      {
+        uid:p.uid,
+        name:p.name,
+        username:p.username,
+        photo:p.photo||"",
+        bio:p.bio||"",
+        premium:!!p.premium,
+        profileColor:p.profileColor||"#7662ff"
+      }
+    );
+
+    $("contactInput").value="";
+    toast("مخاطب اضافه شد");
+
+  }catch(e){
+    toast(friendlyError(e));
+  }
+};
+
+
+/* =========================================================
+   USER PROFILE
+========================================================= */
+
+function openUser(c){
+
+  modal(
+    "Profile",
+    `
+      <div style="text-align:center">
+        ${avatar(c,true)}
+
+        <h2>${esc(c.name)}</h2>
+
+        <div class="muted">
+          @${esc(c.username||"")}
+        </div>
+
+        <p class="muted">
+          ${esc(c.bio||"")}
+        </p>
+
+        <div class="grid2">
+          <button id="userMessage" class="btn primary">
+            💬 Message
+          </button>
+        </div>
+      </div>
+    `
+  );
+
+  $("userMessage").onclick=()=>{
+    closeModal();
+    openPrivate(c);
+  };
+}
+
+
+/* =========================================================
+   PRIVATE CHAT
+========================================================= */
+
+async function openPrivate(c){
+
+  const id=[
+    user.uid,
+    c.uid
+  ].sort().join("_");
+
+  const meta={
+    name:c.name,
+    type:"private",
+    photo:c.photo||"",
+    otherUid:c.uid,
+    updatedAt:Date.now()
+  };
+
+  await update(
+    ref(db,`chats/${id}`),
+    meta
+  );
+
+  await set(
+    ref(db,`userChats/${user.uid}/${id}`),
+    meta
+  );
+
+  await set(
+    ref(db,`userChats/${c.uid}/${id}`),
+    {
+      ...meta,
+      name:profile.name,
+      otherUid:user.uid
+    }
+  );
+
+  openChat({
+    id,
+    ...meta
+  });
+}
+
+
+/* =========================================================
+   OPEN CHAT
+========================================================= */
+
+function openChat(c){
+
+  activeChat=c.id;
+  chatMeta=c;
+  replyTo=null;
+
+  $("chat").classList.add("on");
+
+  $("chatTitle").textContent=
+    c.name||"Chat";
+
+  $("chatSub").textContent=
+    c.type||"chat";
+
+  $("chatAvatar").outerHTML=
+    avatar({
+      name:c.name,
+      photo:c.photo,
+      profileColor:c.profileColor
+    }).replace(
+      'class="avatar"',
+      'class="avatar" id="chatAvatar"'
+    );
+
+  subscribeMessages();
+}
+
+
+/* =========================================================
+   SEND TEXT
+========================================================= */
+
+async function sendMessage(){
+
+  if(chatMeta?.type==="group" || chatMeta?.type==="channel"){
+    const ms=await get(ref(db,`chatMembers/${activeChat}/${user.uid}`));
+    const mem=ms.val();
+    if(mem?.banned){ return toast("دسترسی شما به این گپ محدود شده است"); }
+  }
+
+  const v=$("messageInput")
+    .value
+    .trim();
+
+  if(!v||!activeChat)return;
+
+  try{
+
+    const msg={
+      uid:user.uid,
+      name:profile.name,
+      text:v,
+      createdAt:Date.now()
+    };
+
+    const peMatch=v.match(/\[\[PE:([^\]]+)\]\]/);
+    if(peMatch){
+      const pe=(premiumEmojisLoaded?premiumEmojisCache:[]).find(x=>String(x.id||"")===peMatch[1]);
+      if(pe) msg.premiumInline={id:pe.id,name:pe.name||"Premium Emoji",data:pe.data,type:pe.type||"image/png"};
+    }
+
+    if(replyTo){
+      msg.replyTo={
+        id:replyTo.id,
+        uid:replyTo.uid,
+        name:replyTo.name,
+        text:replyTo.text||""
+      };
+    }
+
+    await set(
+      push(ref(db,`messages/${activeChat}`)),
+      msg
+    );
+
+    await update(
+      ref(db,`chats/${activeChat}`),
+      {
+        lastMessage:v,
+        updatedAt:Date.now()
+      }
+    );
+
+    await update(
+      ref(db,`userChats/${user.uid}/${activeChat}`),
+      {
+        lastMessage:v,
+        updatedAt:Date.now()
+      }
+    );
+
+    $("messageInput").value="";
+    replyTo=null;
+
+  }catch(e){
+    toast(friendlyError(e));
+  }
+}
+
+$("sendMessage").onclick=sendMessage;
+
+$("messageInput").onkeydown=e=>{
+  if(e.key==="Enter"&&!e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+};
+
+
+/* =========================================================
+   MESSAGE RENDER
+========================================================= */
+
+function renderMessage(m,id){
+
+  const mine=m.uid===user.uid;
+
+  let content="";
+
+  if(m.premiumEmoji){
+
+    const src=
+      m.premiumEmoji.data||
+      m.premiumEmoji.src||
+      "";
+
+    content=src
+      ?`<img src="${esc(src)}" alt="${esc(m.premiumEmoji.name||"Emoji")}">`
+      :esc(m.premiumEmoji.fallback||"😊");
+
+  }else if(m.gif){
+
+    content=`
+      <img
+        src="${esc(m.gif)}"
+        alt="GIF"
+      >
+    `;
+
+  }else{
+
+    let safeText=esc(m.text||"");
+    if(m.premiumInline?.data){
+      const token=esc(`[[PE:${m.premiumInline.id||""}]]`);
+      const img=`<img class="inline-premium-emoji" src="${esc(m.premiumInline.data)}" alt="${esc(m.premiumInline.name||"Premium Emoji")}">`;
+      safeText=safeText.replace(token,img);
+    }
+    content=`<div class="message-text">${safeText}</div>`;
+  }
+
+  const reply=m.replyTo
+    ?`
+      <div class="reply-box">
+        ↩ ${esc(m.replyTo.name||"")}
+        <br>
+        ${esc(m.replyTo.text||"")}
+      </div>
+    `
+    :"";
+
+  const reactions=Object.entries(m.reactions||{})
+    .map(([emoji,count])=>
+      `<span class="reaction">${esc(emoji)} ${count}</span>`
+    ).join("");
+
+  return `
+    <div
+      class="msg ${mine?"mine":""} ${
+        m.premiumEmoji?"emoji-message":""
+      }"
+      data-message-id="${esc(id)}"
+    >
+
+      ${reply}
+      ${content}
+
+      ${
+        reactions
+        ?`<div class="reactionbar">${reactions}</div>`
+        :""
+      }
+
+      <div class="message-actions">
+
+        <button
+          class="btn replyMsg"
+          data-id="${esc(id)}"
+        >↩ Reply</button>
+
+        <button
+          class="btn reactMsg"
+          data-id="${esc(id)}"
+        >😊</button>
+
+        ${
+          (mine&&m.text)
+          ?`
+            <button class="btn editMsg" data-id="${esc(id)}">✏️</button>
+          ` : ""
+        }
+
+        ${(ownerUser() || (chatMeta?.type==="group" || chatMeta?.type==="channel") && chatMeta?.owner===user.uid)
+          ?`<button class="btn danger deleteMsg" data-id="${esc(id)}">🗑️ حذف</button>`
+          : (mine ? `<button class="btn danger deleteMsg" data-id="${esc(id)}">🗑️ حذف</button>` : "")
+        }
+
+      </div>
+
+    </div>
+  `;
+}
+
+
+/* =========================================================
+   LIVE MESSAGES
+========================================================= */
+
+function subscribeMessages(){
+
+  if(window.msgUnsub){
+    window.msgUnsub();
+  }
+
+  window.msgUnsub=
+    onValue(
+      ref(db,`messages/${activeChat}`),
+      s=>{
+
+        const entries=
+          Object.entries(s.val()||{})
+          .sort(
+            (a,b)=>
+              (a[1].createdAt||0)-
+              (b[1].createdAt||0)
+          );
+
+        const box=$("messages");
+
+        box.innerHTML=
+          entries.length
+          ?""
+          :`
+            <div class="empty">
+              هنوز پیامی نیست.
+            </div>
+          `;
+
+        entries.forEach(([id,m])=>{
+          box.insertAdjacentHTML(
+            "beforeend",
+            renderMessage(m,id)
+          );
+        });
+
+        box.querySelectorAll(".replyMsg")
+          .forEach(b=>{
+            b.onclick=()=>{
+              const id=b.dataset.id;
+              const entry=entries.find(x=>x[0]===id);
+              if(!entry)return;
+
+              replyTo={
+                id,
+                ...entry[1]
+              };
+
+              $("messageInput").placeholder=
+                "↩ پاسخ به "+
+                (entry[1].name||"پیام")+"...";
+
+              $("messageInput").focus();
+            };
+          });
+
+        box.querySelectorAll(".reactMsg")
+          .forEach(b=>{
+            b.onclick=()=>{
+              openReactionPicker(b.dataset.id);
+            };
+          });
+
+        box.querySelectorAll(".deleteMsg")
+          .forEach(b=>{
+            b.onclick=async()=>{
+              try{
+                await remove(
+                  ref(
+                    db,
+                    `messages/${activeChat}/${b.dataset.id}`
+                  )
+                );
+                toast("پیام حذف شد");
+              }catch(e){
+                toast(friendlyError(e));
+              }
+            };
+          });
+
+        box.querySelectorAll(".editMsg")
+          .forEach(b=>{
+            b.onclick=async()=>{
+
+              const entry=
+                entries.find(x=>x[0]===b.dataset.id);
+
+              if(!entry)return;
+
+              const old=entry[1].text||"";
+
+              const nv=prompt(
+                "ویرایش پیام",
+                old
+              );
+
+              if(nv===null)return;
+
+              const value=nv.trim();
+
+              if(!value)return;
+
+              try{
+                await update(
+                  ref(
+                    db,
+                    `messages/${activeChat}/${b.dataset.id}`
+                  ),
+                  {
+                    text:value,
+                    edited:true,
+                    editedAt:Date.now()
+                  }
+                );
+
+                toast("پیام ویرایش شد");
+
+              }catch(e){
+                toast(friendlyError(e));
+              }
+            };
+          });
+
+        box.scrollTop=box.scrollHeight;
+      }
+    );
+}
+
+
+/* =========================================================
+   REACTIONS
+========================================================= */
+
+function openReactionPicker(messageId){
+
+  const emojis=[
+    "❤️","👍","👎","😂",
+    "🔥","😍","😎","😢",
+    "😡","👏","🎉","💯",
+    "🤔","🤣","💎","✨"
+  ];
+
+  modal(
+    "Reaction",
+    `
+      <div class="emoji-picker">
+        ${emojis.map(x=>`
+          <button
+            class="emoji-picker-item reactionPick"
+            data-e="${x}"
+          >${x}</button>
+        `).join("")}
+      </div>
+    `
+  );
+
+  document
+    .querySelectorAll(".reactionPick")
+    .forEach(b=>{
+
+      b.onclick=async()=>{
+
+        try{
+
+          const emoji=b.dataset.e;
+
+          const rr=
+            ref(
+              db,
+              `messages/${activeChat}/${messageId}/reactions/${emoji}`
+            );
+
+          await runTransaction(
+            rr,
+            n=>(Number(n)||0)+1
+          );
+
+          closeModal();
+
+        }catch(e){
+          toast(friendlyError(e));
+        }
+      };
+    });
+}
+
+
+/* =========================================================
+   PROFILE SAVE
+========================================================= */
+
+async function saveProfile(fields){
+
+  if(fields.username!==undefined){
+
+    const desired=normId(fields.username);
+
+    if(!desired){
+      throw new Error("Username نامعتبر است");
+    }
+
+    const claimed=
+      await claimUsername(
+        user.uid,
+        desired,
+        profile.username||""
+      );
+
+    fields={
+      ...fields,
+      username:claimed
+    };
+  }
+
+  await update(
+    ref(db,"users/"+user.uid),
+    fields
+  );
+
+  profile={
+    ...profile,
+    ...fields
+  };
+
+  renderProfile();
+}
+
+
+/* =========================================================
+   EDIT INFO
+========================================================= */
+
+function editInfo(){
+
+  modal(
+    "Edit Info",
+    `
+      <input
+        id="editName"
+        class="input"
+        placeholder="Name"
+        value="${esc(profile.name||"")}"
+      >
+
+      <input
+        id="editUsername"
+        class="input"
+        placeholder="Username"
+        value="${esc(profile.username||"")}"
+      >
+
+      <textarea
+        id="editBio"
+        class="textarea"
+        placeholder="Bio"
+      >${esc(profile.bio||"")}</textarea>
+
+      <button
+        id="saveInfo"
+        class="btn primary full"
+      >Save</button>
+    `
+  );
+
+  $("saveInfo").onclick=async()=>{
+
+    try{
+
+      await saveProfile({
+        name:
+          $("editName").value.trim()||
+          "ÀVanta User",
+
+        username:
+          $("editUsername").value.trim(),
+
+        bio:
+          $("editBio").value.trim()
+      });
+
+      closeModal();
+      toast("اطلاعات ذخیره شد");
+
+    }catch(e){
+      toast(friendlyError(e));
+    }
+  };
+}
+
+$("editInfo").onclick=editInfo;
+$("profileEdit").onclick=editInfo;
+
+
+/* =========================================================
+   PHOTO
+========================================================= */
+
+function choosePhoto(){
+  $("photoFile").click();
+}
+
+$("setPhoto").onclick=choosePhoto;
+$("profilePhoto").onclick=choosePhoto;
+
+$("photoFile").onchange=e=>{
+
+  const f=e.target.files[0];
+
+  if(!f)return;
+
+  if(f.size>1800000){
+    toast("عکس حداکثر 1.8MB");
+    e.target.value="";
+    return;
+  }
+
+  const r=new FileReader();
+
+  r.onload=async()=>{
+
+    try{
+
+      await saveProfile({
+        photo:r.result
+      });
+
+      toast("عکس تغییر کرد");
+
+    }catch(x){
+      toast(friendlyError(x));
+    }
+  };
+
+  r.readAsDataURL(f);
+  e.target.value="";
+};
+
+
+/* =========================================================
+   PROFILE COLOR
+========================================================= */
+
+$("profileColor").onclick=()=>{
+
+  if(!profile.premium){
+    return toast(
+      "این قابلیت فقط برای Premium است"
+    );
+  }
+
+  const cs=[
+    "#7662ff",
+    "#21c9ff",
+    "#ff4f9a",
+    "#36d89a",
+    "#ffad45",
+    "#a85cff",
+    "#ef62ff",
+    "#4d8cff"
+  ];
+
+  modal(
+    "Change Profile Colour",
+    `
+      <div class="colors">
+        ${cs.map(c=>`
+          <button
+            class="color"
+            data-c="${c}"
+            style="background:${c}"
+          ></button>
+        `).join("")}
+      </div>
+    `
+  );
+
+  document
+    .querySelectorAll(".color")
+    .forEach(b=>{
+
+      b.onclick=async()=>{
+
+        try{
+
+          await saveProfile({
+            profileColor:b.dataset.c
+          });
+
+          closeModal();
+          toast("رنگ تغییر کرد");
+
+        }catch(e){
+          toast(friendlyError(e));
+        }
+      };
+    });
+};
+
+
+/* =========================================================
+   NAME EMOJI
+========================================================= */
+
+$("nameEmoji").onclick=()=>{
+
+  if(!profile.premium){
+    return toast(
+      "این قابلیت فقط برای Premium است"
+    );
+  }
+
+  const em=[
+    "✦","✧","⚡","◆",
+    "◈","✪","♛","☄",
+    "💎","🔥","✨","👑"
+  ];
+
+  modal(
+    "Premium Name Emoji",
+    `
+      <div class="emoji-picker">
+        ${em.map(x=>`
+          <button
+            class="emoji-picker-item pem"
+            data-e="${x}"
+          >${x}</button>
+        `).join("")}
+      </div>
+    `
+  );
+
+  document
+    .querySelectorAll(".pem")
+    .forEach(b=>{
+
+      b.onclick=async()=>{
+
+        await saveProfile({
+          nameEmoji:b.dataset.e
+        });
+
+        closeModal();
+        toast("Emoji فعال شد");
+      };
+    });
+};
+
+
+/* =========================================================
+   PREMIUM
+========================================================= */
+
+$("premiumBtn").onclick=()=>{
+
+  modal(
+    "ÀVanta Premium",
+    `
+      <div class="card" style="text-align:center">
+        <div class="premiummark" style="margin:auto">À</div>
+        <h2>ÀVanta Premium</h2>
+
+        <p class="muted">
+          رنگ پروفایل، Emoji نام، کاور،
+          Premium Emoji و Giftهای ویژه.
+        </p>
+
+        <button
+          id="premiumDemo"
+          class="btn primary full"
+        >
+          فعال‌سازی
+        </button>
+      </div>
+    `
+  );
+
+  $("premiumDemo").onclick=async()=>{
+
+    try{
+
+      await saveProfile({
+        premium:true
+      });
+
+      closeModal();
+      toast("Premium فعال شد");
+
+    }catch(x){
+      toast(friendlyError(x));
+    }
+  };
+};
+
+
+/* =========================================================
+   STORIES
+========================================================= */
+
+$("storyBtn").onclick=()=>$("storyFile").click();
+
+$("storyFile").onchange=e=>{
+
+  const f=e.target.files[0];
+
+  if(!f)return;
+
+  if(f.size>2000000){
+    toast("Story حداکثر 2MB");
+    e.target.value="";
+    return;
+  }
+
+  const r=new FileReader();
+
+  r.onload=async()=>{
+
+    try{
+
+      await set(
+        push(ref(db,`stories/${user.uid}`)),
+        {
+          data:r.result,
+          type:f.type,
+          createdAt:Date.now(),
+          expiresAt:Date.now()+86400000
+        }
+      );
+
+      toast("Story منتشر شد");
+      renderStories();
+
+    }catch(x){
+      toast(friendlyError(x));
+    }
+  };
+
+  r.readAsDataURL(f);
+  e.target.value="";
+};
+
+async function renderStories(){
+
+  try{
+
+    const s=
+      await get(
+        ref(db,`stories/${user.uid}`)
+      );
+
+    const a=
+      Object.values(s.val()||{})
+      .filter(
+        x=>
+          (x.expiresAt||0)>
+          Date.now()
+      );
+
+    $("storyList").innerHTML=
+      a.length
+      ?a.map(x=>
+        x.type?.startsWith("video")
+        ?`
+          <video
+            src="${esc(x.data)}"
+            controls
+            style="width:100%;border-radius:18px"
+          ></video>
+        `
+        :`
+          <img
+            src="${esc(x.data)}"
+            style="width:100%;max-height:300px;object-fit:cover;border-radius:18px"
+          >
+        `
+      ).join("")
+      :"هنوز Storyای نیست.";
+
+  }catch(e){}
+}
+
+
+/* =========================================================
+   PROFILE MORE / COVER
+========================================================= */
+
+$("profileMore").onclick=()=>{
+
+  modal(
+    "Profile Options",
+    `
+      <div class="grid2">
+
+        <button id="pmCover" class="btn">
+          🖼 Change Cover
+        </button>
+
+        <button id="pmEmoji" class="btn">
+          ✨ Premium Emoji
+        </button>
+
+        <button id="pmStory" class="btn">
+          ⭕ Story
+        </button>
+      </div>
+    `
+  );
+
+  $("pmCover").onclick=()=>{
+    closeModal();
+    $("coverFile").click();
+  };
+
+  $("pmEmoji").onclick=()=>{
+    closeModal();
+    $("nameEmoji").click();
+  };
+
+  $("pmStory").onclick=()=>{
+    closeModal();
+    $("storyBtn").click();
+  };
+};
+
+$("coverFile").onchange=e=>{
+
+  const f=e.target.files[0];
+
+  if(!f)return;
+
+  if(f.size>2500000){
+    toast("کاور حداکثر 2.5MB");
+    e.target.value="";
+    return;
+  }
+
+  const r=new FileReader();
+
+  r.onload=async()=>{
+
+    try{
+
+      await saveProfile({
+        cover:r.result
+      });
+
+      toast("کاور پروفایل تغییر کرد");
+
+    }catch(x){
+      toast(friendlyError(x));
+    }
+  };
+
+  r.readAsDataURL(f);
+  e.target.value="";
+};
+
+
+/* =========================================================
+   GIF
+========================================================= */
+
+$("gifMakerBtn").onclick=()=>{
+  $("gifFile").click();
+};
+
+$("chatGif").onclick=()=>{
+
+  if(!activeChat){
+    toast("اول یک چت باز کن");
+    return;
+  }
+
+  $("gifFile").click();
+};
+
+$("gifFile").onchange=e=>{
+
+  const f=e.target.files[0];
+
+  if(!f)return;
+
+  if(!activeChat){
+    toast("اول یک چت باز کن");
+    e.target.value="";
+    return;
+  }
+
+  if(f.size>3000000){
+    toast("GIF حداکثر 3MB");
+    e.target.value="";
+    return;
+  }
+
+  const r=new FileReader();
+
+  r.onload=async()=>{
+
+    try{
+
+      const msg={
+        uid:user.uid,
+        name:profile.name,
+        gif:r.result,
+        createdAt:Date.now()
+      };
+
+      if(replyTo){
+        msg.replyTo={
+          id:replyTo.id,
+          uid:replyTo.uid,
+          name:replyTo.name,
+          text:replyTo.text||""
+        };
+      }
+
+      await set(
+        push(
+          ref(db,`messages/${activeChat}`)
+        ),
+        msg
+      );
+
+      await update(
+        ref(db,`chats/${activeChat}`),
+        {
+          lastMessage:"GIF",
+          updatedAt:Date.now()
+        }
+      );
+
+      await update(
+        ref(db,`userChats/${user.uid}/${activeChat}`),
+        {
+          lastMessage:"GIF",
+          updatedAt:Date.now()
+        }
+      );
+
+      replyTo=null;
+      $("messageInput").placeholder="پیام...";
+      toast("GIF ارسال شد");
+
+    }catch(x){
+      toast(friendlyError(x));
+    }
+  };
+
+  r.readAsDataURL(f);
+  e.target.value="";
+};
+
+
+/* =========================================================
+   PREMIUM EMOJIS FROM FIREBASE
+========================================================= */
+
+async function loadPremiumEmojis(){
+
+  try{
+
+    const s=
+      await get(
+        ref(db,"premiumEmojis")
+      );
+
+    premiumEmojisCache=
+      Object
+        .values(s.val()||{})
+        .filter(x=>x&&x.data);
+
+    premiumEmojisLoaded=true;
+
+    return premiumEmojisCache;
+
+  }catch(e){
+
+    premiumEmojisCache=[];
+    premiumEmojisLoaded=true;
+
+    return [];
+  }
+}
+
+
+/* =========================================================
+   TELEGRAM-STYLE EMOJI PICKER
+========================================================= */
+
+const emojiCategories={
+  "پرطرفدار":[
+    "😀","😃","😄","😁","😆","😅","😂","🤣",
+    "😊","😇","🙂","🙃","😉","😌","😍","🥰",
+    "😘","😎","🤩","🥳","😏","🤗","🤭","🤫",
+    "🤔","🫡","🤐","🤨","😐","😑","😶","🙄",
+    "😮","😲","🥺","😢","😭","😡","🤬","😱",
+    "🤯","😴","🤤","🤓","😈","👿","💀","👻",
+    "🤖","💩","❤️","🧡","💛","💚","💙","💜",
+    "🖤","🤍","🤎","💔","❤️‍🔥","💕","💯","🔥",
+    "✨","⭐","🌟","💎","👑","🎉","🎊","👏",
+    "👍","👎","🙏","💪","🤝","👌","✌️","🤞"
+  ],
+  "لبخند":[
+    "😀","😃","😄","😁","😆","😅","😂","🤣",
+    "😊","😇","🙂","🙃","😉","😌","😍","🥰",
+    "😘","😗","😙","😚","😋","😛","😝","😜",
+    "🤪","🤨","🧐","🤓","😎","🤩","🥳","🤗",
+    "🤭","🤫","🤔","🫡","🤐","🤥","😐","😑"
+  ],
+  "قلب":[
+    "❤️","🧡","💛","💚","💙","💜","🖤","🤍",
+    "🤎","💔","❤️‍🔥","❤️‍🩹","💕","💞","💓",
+    "💗","💖","💘","💝","💟","❣️","💌","💋"
+  ],
+  "دست":[
+    "👍","👎","👌","✌️","🤞","🤟","🤘","🤙",
+    "👈","👉","👆","👇","☝️","✋","🤚","🖐️",
+    "🖖","👏","🙌","👐","🤲","🙏","💪","🫶"
+  ],
+  "حیوانات":[
+    "🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼",
+    "🐨","🐯","🦁","🐮","🐷","🐸","🐵","🙈",
+    "🙉","🙊","🐔","🐧","🐦","🐤","🦄","🐝",
+    "🦋","🐌","🐞","🐢","🐍","🦎","🐙","🦀"
+  ],
+  "غذا":[
+    "🍏","🍎","🍐","🍊","🍋","🍌","🍉","🍇",
+    "🍓","🫐","🍒","🍑","🥭","🍍","🥝","🍅",
+    "🥑","🍔","🍟","🍕","🌭","🌮","🌯","🍿",
+    "🍩","🍪","🎂","🍰","🍫","🍭","☕","🧋"
+  ],
+  "فعالیت":[
+    "⚽","🏀","🏈","⚾","🎾","🏐","🎮","🎯",
+    "🎲","🎸","🎹","🎤","🎧","🎬","🏆","🥇",
+    "🚗","🏎️","✈️","🚀","🚲","🏍️","⛵","🏖️"
+  ]
+};
+
+function openStandardEmojiPicker(){
+
+  if(!activeChat){
+    toast("اول یک چت باز کن");
+    return;
+  }
+
+  let activeCategory="پرطرفدار";
+
+  function body(){
+
+    const list=emojiCategories[activeCategory]||
+      emojiCategories["پرطرفدار"];
+
+    return `
+      <div class="emoji-tabs">
+        ${Object.keys(emojiCategories).map(k=>`
+          <button
+            class="emoji-tab ${k===activeCategory?"on":""}"
+            data-cat="${esc(k)}"
+          >${esc(k)}</button>
+        `).join("")}
+      </div>
+
+      <div class="emoji-picker">
+        ${list.map(e=>`
+          <button
+            class="emoji-picker-item standardEmoji"
+            data-e="${esc(e)}"
+          >${e}</button>
+        `).join("")}
+      </div>
+
+      <div style="margin-top:10px">
+        <button id="premiumEmojiOpen" class="btn primary full">
+          ✨ Premium Emoji
+        </button>
+      </div>
+    `;
+  }
+
+  modal("Emoji",body());
+
+  function bind(){
+
+    document
+      .querySelectorAll(".emoji-tab")
+      .forEach(b=>{
+        b.onclick=()=>{
+          activeCategory=b.dataset.cat;
+          $("modalBody").innerHTML=body();
+          bind();
+        };
+      });
+
+    document
+      .querySelectorAll(".standardEmoji")
+      .forEach(b=>{
+        b.onclick=async()=>{
+
+          try{
+
+            const msg={
+              uid:user.uid,
+              name:profile.name,
+              text:b.dataset.e,
+              emoji:true,
+              createdAt:Date.now()
+            };
+
+            if(replyTo){
+              msg.replyTo={
+                id:replyTo.id,
+                uid:replyTo.uid,
+                name:replyTo.name,
+                text:replyTo.text||""
+              };
+            }
+
+            await set(
+              push(
+                ref(db,`messages/${activeChat}`)
+              ),
+              msg
+            );
+
+            await update(
+              ref(db,`chats/${activeChat}`),
+              {
+                lastMessage:b.dataset.e,
+                updatedAt:Date.now()
+              }
+            );
+
+            await update(
+              ref(db,`userChats/${user.uid}/${activeChat}`),
+              {
+                lastMessage:b.dataset.e,
+                updatedAt:Date.now()
+              }
+            );
+
+            replyTo=null;
+            $("messageInput").placeholder="پیام...";
+            closeModal();
+
+          }catch(e){
+            toast(friendlyError(e));
+          }
+        };
+      });
+
+    const p=$("premiumEmojiOpen");
+
+    if(p){
+      p.onclick=()=>{
+        closeModal();
+        openPremiumEmojiPicker();
+      };
+    }
+  }
+
+  bind();
+}
+
+async function openPremiumEmojiPicker(){
+
+  if(!activeChat){
+    toast("اول یک چت باز کن");
+    return;
+  }
+
+  const list=
+    premiumEmojisLoaded
+    ?premiumEmojisCache
+    :await loadPremiumEmojis();
+
+  if(!list.length){
+
+    modal(
+      "Premium Emoji",
+      `
+        <div class="empty">
+          هنوز Premium Emoji ساخته نشده است.
+
+          ${
+            ownerUser()
+            ?`
+              <br><br>
+              <button
+                id="openEmojiAdmin"
+                class="btn primary"
+              >
+                ساخت Emoji
+              </button>
+            `
+            :""
+          }
+        </div>
+      `
+    );
+
+    const b=$("openEmojiAdmin");
+
+    if(b){
+      b.onclick=()=>{
+        closeModal();
+        openAdminEmojiBuilder();
+      };
+    }
+
+    return;
+  }
+
+  modal(
+    "Premium Emoji",
+    `
+      <div class="emoji-picker">
+        ${list.map((x,i)=>`
+          <button
+            class="emoji-picker-item premiumPickerItem"
+            data-index="${i}"
+            title="${esc(x.name||"Emoji")}"
+          >
+            <img
+              src="${esc(x.data)}"
+              alt=""
+            >
+          </button>
+        `).join("")}
+      </div>
+    `
+  );
+
+  document.querySelectorAll(".premiumPickerItem").forEach(btn=>{
+    btn.onclick=()=>{
+      const emoji=list[Number(btn.dataset.index)];
+      if(!emoji)return;
+      const token=`[[PE:${emoji.id||Date.now()}]]`;
+      const input=$("messageInput");
+      input.value += token;
+      input.focus();
+      closeModal();
+      toast("Premium Emoji به متن اضافه شد");
+    };
+  });
+}
+
+$("chatEmoji").onclick=openStandardEmojiPicker;
+
+
+/* =========================================================
+   CREATE GROUP / CHANNEL
+========================================================= */
+
+async function createCommunity(type){
+
+  modal(
+    type==="group"
+    ?"Create Group"
+    :"Create Channel",
+
+    `
+      <input
+        id="communityName"
+        class="input"
+        placeholder="Name"
+      >
+
+      <input
+        id="communityUsername"
+        class="input"
+        placeholder="Username / Link"
+      >
+
+      <textarea
+        id="communityBio"
+        class="textarea"
+        placeholder="Description"
+      ></textarea>
+
+      <button
+        id="createCommunity"
+        class="btn primary full"
+      >
+        Create
+      </button>
+    `
+  );
+
+  $("createCommunity").onclick=async()=>{
+
+    const name=
+      $("communityName")
+      .value
+      .trim();
+
+    if(!name){
+      return toast("نام را وارد کن");
+    }
+
+    const raw=
+      $("communityUsername")
+      .value
+      .trim();
+
+    try{
+
+      const id=
+        push(ref(db,"chats")).key;
+
+      const uname=
+        normId(raw)||
+        ("avanta_"+id.slice(0,8));
+
+      const finalName=
+        await claimCommunityUsername(
+          id,
+          uname
+        );
+
+      const meta={
+        name,
+        type,
+        username:finalName,
+        bio:$("communityBio").value,
+        owner:user.uid,
+        updatedAt:Date.now(),
+        inviteLink:communityLink(
+          finalName,
+          id
+        )
+      };
+
+      await set(
+        ref(db,`chats/${id}`),
+        meta
+      );
+
+      await set(
+        ref(
+          db,
+          `chatMembers/${id}/${user.uid}`
+        ),
+        {
+          role:"owner",
+          joinedAt:Date.now()
+        }
+      );
+
+      await set(
+        ref(
+          db,
+          `userChats/${user.uid}/${id}`
+        ),
+        meta
+      );
+
+      closeModal();
+      startChatSubscription();
+
+      modal(
+        type==="group"
+        ?"گروه ساخته شد"
+        :"کانال ساخته شد",
+
+        `
+          <div class="card">
+
+            <div class="title">
+              ${esc(name)}
+            </div>
+
+            <div class="muted">
+              لینک ${type==="group"?"گروه":"کانال"}:
+            </div>
+
+            <div class="linkbox">
+              ${esc(meta.inviteLink)}
+            </div>
+
+            <button
+              id="copyCommunityLink"
+              class="btn primary full"
+            >
+              کپی لینک
+            </button>
+
+            <button
+              id="openCreatedChat"
+              class="btn full"
+            >
+              باز کردن
+            </button>
+
+          </div>
+        `
+      );
+
+      $("copyCommunityLink").onclick=async()=>{
+
+        try{
+          await navigator.clipboard.writeText(
+            meta.inviteLink
+          );
+          toast("لینک کپی شد");
+        }catch(e){
+          toast(meta.inviteLink);
+        }
+      };
+
+      $("openCreatedChat").onclick=()=>{
+        closeModal();
+        openChat({
+          id,
+          ...meta
+        });
+      };
+
+    }catch(e){
+      toast(friendlyError(e));
+    }
+  };
+}
+
+$("groupBtn").onclick=
+  ()=>createCommunity("group");
+
+$("channelBtn").onclick=
+  ()=>createCommunity("channel");
+
+
+/* =========================================================
+   EXPLORE / POSTS
+========================================================= */
+
+async function renderExplore(){
+  const box=$("exploreList");
+  if(!box)return;
+  try{
+    const s=await get(ref(db,"posts"));
+    const posts=Object.values(s.val()||{})
+      .sort((a,b)=>(b.approvedAt||b.createdAt||0)-(a.approvedAt||a.createdAt||0));
+    box.innerHTML=posts.length?posts.map(x=>`
+      <article class="post-card">
+        <div class="row" style="background:transparent;border:0;padding:0;margin:0">
+          ${avatar({name:x.authorName,photo:x.authorPhoto,profileColor:x.authorColor})}
+          <div class="grow"><b>${esc(x.authorName||"ÀVanta User")}</b><div class="muted small">@${esc(x.authorUsername||"")}</div></div>
+        </div>
+        <div class="post-text">${esc(x.text||"")}</div>
+        ${x.image?`<img class="post-image" src="${esc(x.image)}" alt="">`:""}
+        <div class="muted small">${new Date(x.approvedAt||x.createdAt||Date.now()).toLocaleString("fa-IR")}</div>
+      </article>`).join("") : `<div class="empty">هنوز پستی منتشر نشده.</div>`;
+  }catch(e){ box.innerHTML=`<div class="empty">${esc(friendlyError(e))}</div>`; }
+}
+
+$("newPostBtn").onclick=()=>{
+  modal("ساخت پست",`
+    <textarea id="postText" class="textarea" placeholder="چی می‌خوای منتشر کنی؟"></textarea>
+    <button id="postImagePick" class="btn full">🖼️ افزودن عکس</button>
+    <div id="postImagePreview" class="coverPreview"></div>
+    <button id="submitPost" class="btn primary full">ارسال برای بررسی</button>
+  `);
+  let image="";
+  $("postImagePick").onclick=()=>$("postImageFile").click();
+  $("postImageFile").onchange=e=>{
+    const f=e.target.files[0]; if(!f)return;
+    if(f.size>2500000)return toast("عکس حداکثر 2.5MB");
+    const r=new FileReader(); r.onload=()=>{image=r.result;$("postImagePreview").style.backgroundImage=`url("${image}")`;}; r.readAsDataURL(f);
+  };
+  $("submitPost").onclick=async()=>{
+    const text=$("postText").value.trim();
+    if(!text&&!image)return toast("متن یا عکس لازم است");
+    try{
+      const id=push(ref(db,"pendingPosts")).key;
+      await set(ref(db,`pendingPosts/${id}`),{uid:user.uid,authorName:profile.name,authorUsername:profile.username||"",authorPhoto:profile.photo||"",authorColor:profile.profileColor||"#36e0a0",text,image,createdAt:Date.now()});
+      closeModal(); toast("پست برای بررسی ادمین ارسال شد");
+    }catch(e){toast(friendlyError(e));}
+  };
+};
+
+/* =========================================================
+   SAVED MESSAGES
+========================================================= */
+
+$("savedBtn").onclick=async()=>{
+
+  const id="saved_"+user.uid;
+
+  const meta={
+    name:"Saved Messages",
+    type:"saved",
+    owner:user.uid,
+    updatedAt:Date.now()
+  };
+
+  try{
+
+    await set(
+      ref(
+        db,
+        `userChats/${user.uid}/${id}`
+      ),
+      meta
+    );
+
+    await set(
+      ref(db,`chats/${id}`),
+      meta
+    );
+
+    startChatSubscription();
+
+    openChat({
+      id,
+      ...meta
+    });
+
+  }catch(e){
+    toast(friendlyError(e));
+  }
+};
+
+
+/* =========================================================
+   NEW MENU
+========================================================= */
+
+$("newBtn").onclick=()=>{
+
+  modal(
+    "Create",
+    `
+      <div class="grid2">
+
+        <button
+          id="newGroup"
+          class="btn primary"
+        >
+          👥 Group
+        </button>
+
+        <button
+          id="newChannel"
+          class="btn primary"
+        >
+          📢 Channel
+        </button>
+
+        <button
+          id="newEmoji"
+          class="btn"
+        >
+          😊 Emoji
+        </button>
+
+        <button
+          id="newSaved"
+          class="btn"
+        >
+          🔖 Saved
+        </button>
+
+      </div>
+    `
+  );
+
+  $("newGroup").onclick=()=>{
+    closeModal();
+    createCommunity("group");
+  };
+
+  $("newChannel").onclick=()=>{
+    closeModal();
+    createCommunity("channel");
+  };
+
+  $("newEmoji").onclick=()=>{
+    closeModal();
+
+    if(activeChat){
+      openStandardEmojiPicker();
+    }else{
+      toast("اول یک چت باز کن");
+    }
+  };
+
+  $("newSaved").onclick=()=>{
+    closeModal();
+    $("savedBtn").click();
+  };
+};
+
+
+/* =========================================================
+   ADMIN EMOJI BUILDER
+========================================================= */
+
+function openAdminEmojiBuilder(){
+
+  if(!ownerUser()){
+    return toast(
+      "دسترسی فقط برای Admin است"
+    );
+  }
+
+  modal(
+    "Premium Emoji Builder",
+    `
+      <p class="muted small">
+        تصویر را انتخاب کن؛
+        به Base64 تبدیل و در Firebase ذخیره می‌شود.
+      </p>
+
+      <input
+        id="emojiName"
+        class="input"
+        placeholder="نام Emoji"
+      >
+
+      <input
+        id="emojiFileAdmin"
+        type="file"
+        accept="image/*"
+        class="input"
+      >
+
+      <input
+        id="emojiId"
+        class="input"
+        placeholder="ID اختیاری"
+      >
+
+      <button
+        id="savePremiumEmoji"
+        class="btn primary full"
+      >
+        ساخت Emoji
+      </button>
+
+      <div
+        id="emojiPreview"
+        class="emojiBox"
+      >
+        Preview
+      </div>
+    `
+  );
+
+  $("emojiFileAdmin").onchange=async()=>{
+
+    const f=
+      $("emojiFileAdmin")
+      .files[0];
+
+    if(!f)return;
+
+    if(f.size>700000){
+      toast(
+        "برای Base64 بهتر است تصویر زیر 700KB باشد"
+      );
+      return;
+    }
+
+    try{
+
+      const data=await fileData(f);
+
+      $("emojiPreview").innerHTML=
+        `<img src="${esc(data)}" alt="">`;
+
+    }catch(e){
+      toast(friendlyError(e));
+    }
+  };
+
+  $("savePremiumEmoji").onclick=async()=>{
+
+    try{
+
+      const f=
+        $("emojiFileAdmin")
+        .files[0];
+
+      const name=
+        $("emojiName")
+        .value
+        .trim();
+
+      if(!f||!name){
+        return toast(
+          "نام و تصویر لازم است"
+        );
+      }
+
+      if(f.size>700000){
+        return toast(
+          "تصویر باید زیر 700KB باشد"
+        );
+      }
+
+      const data=await fileData(f);
+
+      const id=
+        $("emojiId").value.trim()||
+        push(ref(db,"premiumEmojis")).key;
+
+      await set(
+        ref(
+          db,
+          `premiumEmojis/${id}`
+        ),
+        {
+          id,
+          name,
+          data,
+          type:f.type,
+          createdAt:Date.now(),
+          owner:user.uid
+        }
+      );
+
+      premiumEmojisLoaded=false;
+      premiumEmojisCache=[];
+
+      closeModal();
+      toast("Premium Emoji ساخته شد");
+
+    }catch(x){
+      toast(friendlyError(x));
+    }
+  };
+}
+
+
+/* =========================================================
+   ADMIN PANEL
+========================================================= */
+
+$("adminBtn").onclick=()=>{
+
+  if(user.uid!==ADMIN_UID)return;
+
+  modal(
+    "ÀVANTA ADMIN",
+    `
+      <div class="grid2">
+        <button id="adminPosts" class="btn primary">📝 پست‌های در انتظار</button>
+        <button id="adminMessages" class="btn">🗑️ مدیریت پیام‌ها</button>
+      </div>
+    `
+  );
+
+
+
+  $("adminPosts").onclick=async()=>{
+    const snap=await get(ref(db,"pendingPosts"));
+    const posts=Object.entries(snap.val()||{});
+    modal("پست‌های در انتظار", posts.length ? posts.map(([id,x])=>`
+      <div class="post-card">
+        <div class="muted small">${esc(x.authorName||"کاربر")} · ${new Date(x.createdAt||Date.now()).toLocaleString("fa-IR")}</div>
+        <div class="post-text">${esc(x.text||"")}</div>
+        ${x.image?`<img class="post-image" src="${esc(x.image)}" alt="">`:""}
+        <div class="grid2">
+          <button class="btn primary approvePost" data-id="${esc(id)}">انتشار</button>
+          <button class="btn danger rejectPost" data-id="${esc(id)}">رد</button>
+        </div>
+      </div>`).join("") : `<div class="empty">پست در انتظاری نیست.</div>`);
+    document.querySelectorAll(".approvePost").forEach(b=>b.onclick=async()=>{
+      const id=b.dataset.id; const ps=await get(ref(db,`pendingPosts/${id}`)); const x=ps.val(); if(!x)return;
+      await set(ref(db,`posts/${id}`),{...x,approvedAt:Date.now(),approvedBy:user.uid});
+      await remove(ref(db,`pendingPosts/${id}`)); toast("پست منتشر شد"); closeModal(); renderExplore();
+    });
+    document.querySelectorAll(".rejectPost").forEach(b=>b.onclick=async()=>{ await remove(ref(db,`pendingPosts/${b.dataset.id}`)); toast("پست رد شد"); closeModal(); });
+  };
+
+  $("adminMessages").onclick=()=>{
+    if(!activeChat)return toast("اول یک چت را باز کن");
+    closeModal();
+    toast("در چت، حذف پیام برای ادمین فعال است");
+  };
+
+};
+
+
+/* =========================================================
+   CHAT MENU
+========================================================= */
+
+$("chatMenu").onclick=()=>{
+
+  modal(
+    "Chat",
+    `
+      <div class="grid2">
+        ${(chatMeta?.type==="group"||chatMeta?.type==="channel")&&chatMeta?.owner===user.uid ? `<button id="communityLinkBtn" class="btn primary">🔗 لینک گپ</button><button id="communityBanBtn" class="btn danger">🚫 بن کاربر</button>` : ""}
+
+        <button
+          id="clearChat"
+          class="btn danger"
+        >
+          Clear
+        </button>
+
+        <button
+          id="shareChat"
+          class="btn"
+        >
+          Share
+        </button>
+
+        <button
+          id="closeChatMenu"
+          class="btn"
+        >
+          Close
+        </button>
+
+      </div>
+    `
+  );
+
+  const cl=$("communityLinkBtn");
+  if(cl)cl.onclick=async()=>{
+    const link=chatMeta?.inviteLink||communityLink(chatMeta?.username,activeChat);
+    try{await navigator.clipboard.writeText(link);toast("لینک گپ کپی شد");}catch(e){toast(link);}
+  };
+  const cb=$("communityBanBtn");
+  if(cb)cb.onclick=async()=>{
+    const uid=prompt("UID کاربری که می‌خواهی بن کنی:"); if(!uid)return;
+    await update(ref(db,`chatMembers/${activeChat}/${uid}`),{banned:true,bannedAt:Date.now(),bannedBy:user.uid});
+    toast("کاربر بن شد");
+  };
+
+  $("clearChat").onclick=async()=>{
+
+    if(!activeChat)return;
+    const canClear=ownerUser() || ((chatMeta?.type==="group"||chatMeta?.type==="channel") && chatMeta?.owner===user.uid);
+    if(!canClear)return toast("فقط ادمین/مالک گپ می‌تواند پیام‌ها را پاک کند");
+
+    try{
+
+      await set(
+        ref(
+          db,
+          `messages/${activeChat}`
+        ),
+        null
+      );
+
+      closeModal();
+      toast("پیام‌ها پاک شدند");
+
+    }catch(x){
+      toast(friendlyError(x));
+    }
+  };
+
+  $("shareChat").onclick=async()=>{
+
+    const text=
+      chatMeta?.name||
+      "ÀVanta Chat";
+
+    try{
+
+      if(navigator.share){
+        await navigator.share({
+          title:text,
+          text:"چت در ÀVanta Messenger"
+        });
+      }else{
+        await navigator.clipboard.writeText(text);
+        toast("نام چت کپی شد");
+      }
+
+    }catch(e){}
+  };
+
+  $("closeChatMenu").onclick=
+    closeModal;
+};
+
+
+/* =========================================================
+   BACK CHAT
+========================================================= */
+
+$("backChat").onclick=()=>{
+
+  $("chat").classList.remove("on");
+
+  activeChat=null;
+  chatMeta=null;
+  replyTo=null;
+
+  $("messageInput").placeholder="پیام...";
+
+  if(window.msgUnsub){
+    window.msgUnsub();
+    window.msgUnsub=null;
+  }
+};
+
+
+/* =========================================================
+   BOTTOM NAV
+========================================================= */
+
+document
+  .querySelectorAll(".bottom button")
+  .forEach(b=>{
+
+    b.onclick=()=>{
+
+      document
+        .querySelectorAll(".page")
+        .forEach(x=>
+          x.classList.remove("on")
+        );
+
+      $(b.dataset.page)
+        .classList.add("on");
+
+      document
+        .querySelectorAll(".bottom button")
+        .forEach(x=>
+          x.classList.toggle(
+            "on",
+            x===b
+          )
+        );
+    };
+  });
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+$("search").oninput=e=>{
+
+  const q=
+    e.target.value
+    .toLowerCase();
+
+  document
+    .querySelectorAll(
+      "#chatList .row"
+    )
+    .forEach(x=>{
+
+      x.style.display=
+        x.textContent
+          .toLowerCase()
+          .includes(q)
+          ?""
+          :"none";
+    });
+};
+
+
+/* =========================================================
+   INITIAL RENDER
+========================================================= */
+
+function renderAll(){
+  renderProfile();
+  renderChats();
+  renderExplore();
+}
+h47
+</script>
+</body>
+</html>
